@@ -24,7 +24,7 @@
     "debug": "^2.2.0",
     "lodash.defaults": "^3.1.2",
     "minimist": "^1.1.1",
-    "mongodb-version-list": "0.0.3",
+    "mongodb-version-list": "^0.0.3",
     "request": "^2.60.0",
     "semver": "^5.0.1"
   },
