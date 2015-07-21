@@ -1,0 +1,14 @@
+Usage: mongodb-download-url
+
+Get the URL to download a MongoDB tarball or zip.
+
+Usage:
+  mongodb-download-url <version>
+
+Options:
+  --version            A semver-ish version string [Default: `stable`].
+  --platform           The operating system [Default: `process.platform`].
+  --bits               CPU arch [Default: `process.arch`].
+  --debug              Debug build [Default: `false`].
+  -h --help            Show this screen.
+  --version            Show version.
