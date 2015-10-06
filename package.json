@@ -29,8 +29,6 @@
     "semver": "^5.0.1"
   },
   "devDependencies": {
-    "benchmark": "~1.0.0",
-    "cli-table": "~0.3.1",
     "coveralls": "^2.11.2",
     "eslint-config-mongodb-js": "^0.1.5",
     "istanbul": "^0.3.17",
