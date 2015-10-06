@@ -6,7 +6,7 @@
     "fmt": "mongodb-js-fmt test/*.js bin/*.js index.js",
     "check": "mongodb-js-precommit",
     "test": "mocha",
-    "ci": "./node_modules/istanbul/lib/cli.js cover _mocha -- -R spec ./test/*.test.js"
+    "ci": "npm run check && ./node_modules/istanbul/lib/cli.js cover _mocha -- -R spec ./test/*.test.js"
   },
   "bin": {
     "mongodb-download-url": "bin/mongodb-download-url.js"
