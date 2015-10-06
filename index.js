@@ -121,13 +121,20 @@ module.exports = function(opts, fn) {
     if (opts.platform === 'linux') {
       opts.distro = 'linux_' + opts.bits;
     } else if (opts.platform === 'osx') {
-      opts.distro = 'osx_108';
+      opts.distro = '';
     } else {
-      opts.distro = 'windows_64_2k8';
+      if (opts.enterprise) {
+        opts.distro = 'windows-64';
+      } else {
+        opts.distro = '2008plus-ssl';
+      }
     }
     if (opts.debug) {
       opts.distro += '_debug';
     }
+  }
+  if (opts.platform !== 'osx') {
+    opts.distro += '-';
   }
 
   debug('assembled options', opts);
@@ -147,16 +154,28 @@ module.exports = function(opts, fn) {
 
   handler(function(err, v) {
     if (err) return fn(err);
-
-    var basename = 'mongodb-' + opts.platform + '-' + opts.arch
-      + (opts.debug ? '-debugsymbols' : '') + '-' + v;
-    var pkg = {
-      name: 'mongodb',
-      version: v,
-      artifact: basename + opts.ext,
-      url: 'http://fastdl.mongodb.org/' + opts.platform + '/' + basename + opts.ext
-    };
-
+    var pkg;
+    var basename;
+    if (opts.enterprise) {
+      basename = 'mongodb-' + opts.platform + '-x86_64-enterprise-' + opts.distro
+        + (opts.debug ? '-debugsymbols-' : '') + v;
+      pkg = {
+        name: 'mongodb',
+        version: v,
+        artifact: basename + opts.ext,
+        url: 'http://downloads.mongodb.com/' + opts.platform + '/' + basename + opts.ext
+      };
+    } else {
+      basename = 'mongodb-' + opts.platform + '-x86_64-' + opts.distro
+        + (opts.debug ? '-debugsymbols-' : '') + v;
+      pkg = {
+        name: 'mongodb',
+        version: v,
+        artifact: basename + opts.ext,
+        url: 'http://fastdl.mongodb.org/' + opts.platform + '/' + basename + opts.ext
+      };
+    }
+    debug('Url: ' + pkg.url);
     fn(null, pkg);
   });
 };
