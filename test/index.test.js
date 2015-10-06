@@ -8,7 +8,9 @@ describe('mongodb-download-url', function() {
       platform: 'win32',
       bits: 64
     }, function(err, res) {
-      if (err) return done(err);
+      if (err) {
+        return done(err);
+      }
       assert.deepEqual(res, {
         name: 'mongodb',
         version: '3.1.6',
@@ -25,7 +27,9 @@ describe('mongodb-download-url', function() {
       platform: 'osx',
       bits: 64
     }, function(err, res) {
-      if (err) return done(err);
+      if (err) {
+        return done(err);
+      }
       assert.deepEqual(res, {
         name: 'mongodb',
         version: '3.1.6',
@@ -43,7 +47,9 @@ describe('mongodb-download-url', function() {
       distro: 'debian71',
       bits: 64
     }, function(err, res) {
-      if (err) return done(err);
+      if (err) {
+        return done(err);
+      }
       assert.deepEqual(res, {
         name: 'mongodb',
         version: '3.1.4',
@@ -61,7 +67,9 @@ describe('mongodb-download-url', function() {
       enterprise: true,
       bits: 64
     }, function(err, res) {
-      if (err) return done(err);
+      if (err) {
+        return done(err);
+      }
       assert.deepEqual(res, {
         name: 'mongodb',
         version: '3.0.6',
@@ -79,7 +87,9 @@ describe('mongodb-download-url', function() {
       enterprise: true,
       bits: 64
     }, function(err, res) {
-      if (err) return done(err);
+      if (err) {
+        return done(err);
+      }
       assert.deepEqual(res, {
         name: 'mongodb',
         version: '3.1.8',
@@ -98,7 +108,9 @@ describe('mongodb-download-url', function() {
       enterprise: true,
       bits: 64
     }, function(err, res) {
-      if (err) return done(err);
+      if (err) {
+        return done(err);
+      }
       assert.deepEqual(res, {
         name: 'mongodb',
         version: '3.0.6',
@@ -117,7 +129,9 @@ describe('mongodb-download-url', function() {
       bits: 64,
       debug: true
     }, function(err, res) {
-      if (err) return done(err);
+      if (err) {
+        return done(err);
+      }
       assert.deepEqual(res, {
         name: 'mongodb',
         version: '610765fdb94eebf612bd0172ec081ccc21110103',
@@ -136,7 +150,9 @@ describe('mongodb-download-url', function() {
     getURL({
       version: 'stable'
     }, function(err, res) {
-      if (err) return done(err);
+      if (err) {
+        return done(err);
+      }
       assert(res.version);
       assert(res.url);
       done();
@@ -147,7 +163,9 @@ describe('mongodb-download-url', function() {
     getURL({
       version: 'unstable'
     }, function(err, res) {
-      if (err) return done(err);
+      if (err) {
+        return done(err);
+      }
       assert(res.version);
       assert(res.url);
       done();
@@ -158,7 +176,9 @@ describe('mongodb-download-url', function() {
     getURL({
       version: 'latest'
     }, function(err, res) {
-      if (err) return done(err);
+      if (err) {
+        return done(err);
+      }
       assert(res.version);
       assert(res.url);
       done();

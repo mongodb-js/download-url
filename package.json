@@ -3,6 +3,7 @@
   "version": "0.0.2",
   "description": "Lookup download URL's for MongoDB versions.",
   "scripts": {
+    "fmt": "mongodb-js-fmt test/*.js bin/*.js index.js",
     "check": "mongodb-js-precommit",
     "test": "mocha",
     "ci": "./node_modules/istanbul/lib/cli.js cover _mocha -- -R spec ./test/*.test.js"
@@ -20,21 +21,22 @@
     "test"
   ],
   "dependencies": {
-    "async": "^1.4.0",
+    "async": "^1.4.2",
     "debug": "^2.2.0",
     "lodash.defaults": "^3.1.2",
-    "minimist": "^1.1.1",
+    "minimist": "^1.2.0",
     "mongodb-version-list": "^0.0.3",
-    "request": "^2.60.0",
-    "semver": "^5.0.1"
+    "request": "^2.64.0",
+    "semver": "^5.0.3"
   },
   "devDependencies": {
-    "coveralls": "^2.11.2",
-    "eslint-config-mongodb-js": "^0.1.5",
-    "istanbul": "^0.3.17",
-    "mocha": "~2.2.5",
-    "mongodb-js-precommit": "^0.1.3",
-    "pre-commit": "^1.0.10"
+    "coveralls": "^2.11.4",
+    "eslint-config-mongodb-js": "^0.1.6",
+    "istanbul": "^0.3.22",
+    "mocha": "~2.3.3",
+    "mongodb-js-fmt": "0.0.3",
+    "mongodb-js-precommit": "^0.2.2",
+    "pre-commit": "^1.1.1"
   },
   "keywords": [
     "mongodb",

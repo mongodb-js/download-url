@@ -22,9 +22,13 @@ function mci(opts, fn) {
     url: url,
     json: true
   }, function(err, res, body) {
-    if (err) return fn(err);
+    if (err) {
+      return fn(err);
+    }
 
-    if (res.statusCode === 404) return fn(new Error(body.message));
+    if (res.statusCode === 404) {
+      return fn(new Error(body.message));
+    }
     debug('got body', body);
     var dl = 'https://s3.amazonaws.com/mciuploads/mongodb-mongo-' + opts.branch
       + '/' + opts.distro + '/' + opts.version + '/binaries';
@@ -48,7 +52,9 @@ function mci(opts, fn) {
 function search(query, fn) {
   debug('searching for version', query);
   versions(function(err, res) {
-    if (err) return fn(err);
+    if (err) {
+      return fn(err);
+    }
 
     var found = false;
     for (var i = 0; i < res.length; i++) {
@@ -65,14 +71,18 @@ function search(query, fn) {
 
 function latest(fn) {
   versions(function(err, res) {
-    if (err) return fn(err);
+    if (err) {
+      return fn(err);
+    }
     fn(null, res[0]);
   });
 }
 
 function stable(fn) {
   versions(function(err, res) {
-    if (err) return fn(err);
+    if (err) {
+      return fn(err);
+    }
 
     fn(null, res.map(function(v) {
       return semver.parse(v);
@@ -128,19 +138,17 @@ module.exports = function(opts, fn) {
       opts.distro = 'linux_' + opts.bits;
     } else if (opts.platform === 'osx') {
       opts.distro = '';
+    } else if (opts.enterprise) {
+      opts.distro = 'windows-64';
     } else {
-      if (opts.enterprise) {
-        opts.distro = 'windows-64';
-      } else {
-        opts.distro = '2008plus-ssl';
-      }
+      opts.distro = '2008plus-ssl';
     }
     if (opts.debug) {
       opts.distro += '_debug';
     }
   }
   var extraDash;
-  if (opts.platform == 'osx') {
+  if (opts.platform === 'osx') {
     extraDash = '';
   } else {
     extraDash = '-';
@@ -162,7 +170,9 @@ module.exports = function(opts, fn) {
   }
 
   handler(function(err, v) {
-    if (err) return fn(err);
+    if (err) {
+      return fn(err);
+    }
     var pkg;
     var basename;
     if (opts.enterprise) {
