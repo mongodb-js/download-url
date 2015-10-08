@@ -64,7 +64,7 @@ function search(query, fn) {
       }
     }
     if (!found) {
-      fn(new Error('No matches'));
+      fn(new Error('Could not find a MongoDB version matching `'+query+'`'));
     }
   });
 }
