@@ -6,18 +6,24 @@ var semver = require('semver');
 var request = require('request');
 var async = require('async');
 var defaults = require('lodash.defaults');
+var format = require('util').format;
 var debug = require('debug')('mongodb-download-url');
 
-function mci(opts, fn) {
+var EVERGREEN_ENDPOINT = 'http://mci-motu.10gen.cc:9090';
+
+function resolveEvergreenBuildArtifact(opts, fn) {
   if (opts.platform === 'win32') {
     opts.distro = 'windows_64_2k8';
     if (opts.debug) {
       opts.distro += '_debug';
     }
   }
-  var url = 'http://mci-motu.10gen.cc:9090/rest/v1/projects/mongodb-mongo-'
-    + opts.branch + '/revisions/' + opts.version;
-  debug('resolving version via MCI `%s`', url);
+
+  var projectName = format('mongodb-mongo-%s', opts.branch);
+  var url = format('%s/rest/v1/projects/%s/revisions/%s',
+    EVERGREEN_ENDPOINT, projectName, opts.version);
+
+  debug('resolving git commit sha1 via evergreen `%s`', url);
   request.get({
     url: url,
     json: true
@@ -29,13 +35,12 @@ function mci(opts, fn) {
     if (res.statusCode === 404) {
       return fn(new Error(body.message));
     }
-    debug('got body', body);
-    var dl = 'https://s3.amazonaws.com/mciuploads/mongodb-mongo-' + opts.branch
-      + '/' + opts.distro + '/' + opts.version + '/binaries';
 
-    var s = 'mongodb_mongo_' + opts.branch + '_' + opts.distro;
+    var dl = format('https://s3.amazonaws.com/mciuploads/%s/%s/%s/binaries',
+      projectName, opts.distro, opts.version);
+    var artifactPrefix = format('mongodb_mongo_%s_%s', opts.branch, opts.distro);
     var basename = body.builds.filter(function(b) {
-      return b.indexOf(s) > -1;
+      return b.indexOf(artifactPrefix) > -1;
     })[0];
 
     // @todo: test across all distros as I believe this may be different for some.
@@ -94,6 +99,117 @@ function stable(fn) {
   });
 }
 
+function parsePlatform(opts) {
+  if (opts.platform === 'darwin') {
+    opts.platform = 'osx';
+  }
+  if (opts.platform === 'windows') {
+    opts.platform = 'win32';
+  }
+  return opts;
+}
+
+function parseBits(opts) {
+  // 64bit -> 64
+  opts.bits = '' + opts.bits;
+  opts.bits = opts.bits.replace(/[^0-9]/g, '');
+  return opts;
+}
+
+function parseFileExtension(opts) {
+  opts.ext = '.tgz';
+  if (opts.platform === 'win32') {
+    opts.ext = '.zip';
+  }
+  return opts;
+}
+
+function parseDistro(opts) {
+  if (!opts.distro) {
+    if (opts.platform === 'linux') {
+      opts.distro = 'linux_' + opts.bits;
+    } else if (opts.platform === 'osx') {
+      opts.distro = '';
+    } else if (opts.enterprise) {
+      opts.distro = 'windows-64';
+    } else {
+      opts.distro = '2008plus-ssl';
+    }
+    if (opts.debug) {
+      opts.distro += '_debug';
+    }
+  }
+  return opts;
+}
+
+function resolve(opts, fn) {
+  /**
+   * If it's a commit hash, resolve the artifact
+   * URL using the evergreen rest api.
+   */
+  if (opts.version.length === 40) {
+    return resolveEvergreenBuildArtifact(opts, fn);
+  }
+
+  var handler = versions;
+  if (opts.version === 'latest' || opts.version === 'unstable') {
+    handler = latest;
+  } else if (opts.version === 'stable') {
+    handler = stable;
+  } else {
+    handler = search.bind(null, opts);
+  }
+
+  handler(function(err, versionId) {
+    if (err) {
+      return fn(err);
+    }
+
+    var extraDash = '-';
+    if (opts.platform === 'osx') {
+      extraDash = '';
+    }
+
+    var artifact;
+    var hostname = 'fastdl.mongodb.org';
+
+    if (opts.enterprise) {
+      hostname = 'downloads.mongodb.com';
+      artifact = format('mongodb-%s-x86_64-enterprise-%s',
+        opts.platform,
+        [
+          opts.distro,
+          extraDash,
+          opts.debug ? '-debugsymbols-' : '',
+          versionId,
+          opts.ext
+        ].join(''));
+    } else if (opts.platform === 'linux') {
+      artifact = format('mongodb-%s-x86_64-%s',
+        opts.platform,
+        [
+          opts.debug ? '-debugsymbols-' : '',
+          versionId,
+          opts.ext
+        ].join(''));
+    } else {
+      artifact = 'mongodb-' + opts.platform + '-x86_64-' + opts.distro + extraDash
+        + (opts.debug ? '-debugsymbols-' : '') + versionId + opts.ext;
+    }
+
+    var pkg = {
+      name: 'mongodb',
+      version: versionId,
+      artifact: artifact,
+      url: format('http://%s/%s/%s',
+        hostname, opts.platform, artifact)
+    };
+
+    debug('Url: ' + pkg.url);
+    fn(null, pkg);
+  });
+}
+
 module.exports = function(opts, fn) {
   if (Array.isArray(opts)) {
     var tasks = {};
@@ -110,7 +226,6 @@ module.exports = function(opts, fn) {
       version: opts
     };
   }
-  var handler = versions;
 
   defaults(opts, {
     arch: ARCH,
@@ -120,81 +235,12 @@ module.exports = function(opts, fn) {
     debug: false
   });
 
-  // 64bit -> 64
-  opts.bits = '' + opts.bits;
-  opts.bits = opts.bits.replace(/[^0-9]/g, '');
+  parsePlatform(opts);
+  parseBits(opts);
+  parseFileExtension(opts);
+  parseDistro(opts);
 
-  if (opts.platform === 'darwin') {
-    opts.platform = 'osx';
-  }
-  if (opts.platform === 'windows') {
-    opts.platform = 'win32';
-  }
+  debug('Building URL for options `%j`', opts);
 
-  opts.ext = opts.platform === 'win32' ? '.zip' : '.tgz';
-
-  if (!opts.distro) {
-    if (opts.platform === 'linux') {
-      opts.distro = 'linux_' + opts.bits;
-    } else if (opts.platform === 'osx') {
-      opts.distro = '';
-    } else if (opts.enterprise) {
-      opts.distro = 'windows-64';
-    } else {
-      opts.distro = '2008plus-ssl';
-    }
-    if (opts.debug) {
-      opts.distro += '_debug';
-    }
-  }
-  var extraDash;
-  if (opts.platform === 'osx') {
-    extraDash = '';
-  } else {
-    extraDash = '-';
-  }
-
-  debug('assembled options', opts);
-
-  if (opts.version.length === 40) {
-    // A commit hash
-    return mci(opts, fn);
-  }
-
-  if (opts.version === 'latest' || opts.version === 'unstable') {
-    handler = latest;
-  } else if (opts.version === 'stable') {
-    handler = stable;
-  } else {
-    handler = search.bind(null, opts);
-  }
-
-  handler(function(err, v) {
-    if (err) {
-      return fn(err);
-    }
-    var pkg;
-    var basename;
-    if (opts.enterprise) {
-      basename = 'mongodb-' + opts.platform + '-x86_64-enterprise-' + opts.distro + extraDash
-        + (opts.debug ? '-debugsymbols-' : '') + v;
-      pkg = {
-        name: 'mongodb',
-        version: v,
-        artifact: basename + opts.ext,
-        url: 'http://downloads.mongodb.com/' + opts.platform + '/' + basename + opts.ext
-      };
-    } else {
-      basename = 'mongodb-' + opts.platform + '-x86_64-' + opts.distro + extraDash
-        + (opts.debug ? '-debugsymbols-' : '') + v;
-      pkg = {
-        name: 'mongodb',
-        version: v,
-        artifact: basename + opts.ext,
-        url: 'http://fastdl.mongodb.org/' + opts.platform + '/' + basename + opts.ext
-      };
-    }
-    debug('Url: ' + pkg.url);
-    fn(null, pkg);
-  });
+  resolve(opts, fn);
 };
