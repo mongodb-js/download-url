@@ -74,7 +74,8 @@ describe('mongodb-download-url', function() {
         name: 'mongodb',
         version: '3.0.6',
         artifact: 'mongodb-win32-x86_64-enterprise-windows-64-3.0.6.zip',
-        url: 'http://downloads.mongodb.com/win32/mongodb-win32-x86_64-enterprise-windows-64-3.0.6.zip'
+        url: 'http://downloads.mongodb.com/win32/'
+          + 'mongodb-win32-x86_64-enterprise-windows-64-3.0.6.zip'
       });
       done();
     });
@@ -115,7 +116,8 @@ describe('mongodb-download-url', function() {
         name: 'mongodb',
         version: '3.0.6',
         artifact: 'mongodb-linux-x86_64-enterprise-ubuntu1404-3.0.6.tgz',
-        url: 'http://downloads.mongodb.com/linux/mongodb-linux-x86_64-enterprise-ubuntu1404-3.0.6.tgz'
+        url: 'http://downloads.mongodb.com/linux/mongodb-linux-x86_64'
+          + '-enterprise-ubuntu1404-3.0.6.tgz'
       });
       done();
     });
