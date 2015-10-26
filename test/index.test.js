@@ -1,11 +1,18 @@
 var resolve = require('../');
+var got = require('got');
 var assert = require('assert');
 
 function verify(done, query, expectedURL) {
   resolve(query, function(err, res) {
     assert.ifError(err);
     assert.equal(res.url, expectedURL);
-    done();
+
+    got(res.url, {method: 'HEAD'}, function(badUrl) {
+      if (badUrl) {
+        return done(new Error('The URL `' + res.url + '` returned: ' + badUrl.message));
+      }
+      done();
+    });
   });
 }
 
@@ -77,6 +84,15 @@ describe('mongodb-download-url', function() {
       verify(done, query,
         'http://downloads.mongodb.com/win32/'
         + 'mongodb-win32-x86_64-enterprise-windows-64-3.1.9.zip');
+    });
+    it('should resolve 2.6.11', function(done) {
+      var query = {
+        version: '2.6.11',
+        platform: 'win32',
+        bits: 64
+      };
+      verify(done, query,
+        'http://fastdl.mongodb.org/win32/mongodb-win32-x86_64-2008plus-2.6.11.zip');
     });
   });
 

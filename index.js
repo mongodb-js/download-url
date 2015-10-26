@@ -132,6 +132,9 @@ function parseDistro(opts) {
       opts.distro = '';
     } else if (opts.enterprise) {
       opts.distro = 'windows-64';
+    } else if (opts.version.charAt(0) === '2') {
+      // 2.x did not ship ssl for windows.
+      opts.distro = '2008plus';
     } else {
       opts.distro = '2008plus-ssl';
     }
