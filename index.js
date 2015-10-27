@@ -150,7 +150,7 @@ function resolve(opts, fn) {
    * If it's a commit hash, resolve the artifact
    * URL using the evergreen rest api.
    */
-  if (opts.version.length === 40) {
+  if (opts.version && opts.version.length === 40) {
     return resolveEvergreenBuildArtifact(opts, fn);
   }
 
