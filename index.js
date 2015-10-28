@@ -200,16 +200,13 @@ function resolve(opts, fn) {
         + (opts.debug ? '-debugsymbols-' : '') + versionId + opts.ext;
     }
 
-    var pkg = {
-      name: 'mongodb',
-      version: versionId,
-      artifact: artifact,
-      url: format('http://%s/%s/%s',
-        hostname, opts.platform, artifact)
-    };
+    opts.name = 'mongodb';
+    opts.version = versionId;
+    opts.artifact = artifact;
+    opts.url = format('http://%s/%s/%s', hostname, opts.platform, artifact);
 
-    debug('Url: ' + pkg.url);
-    fn(null, pkg);
+    debug('fully resolved', JSON.stringify(opts, null, 2));
+    fn(null, opts);
   });
 }
 

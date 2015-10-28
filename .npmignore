@@ -1,4 +1,5 @@
 test/
-.jshintrc
+coverage/
+.eslintrc
 .jsfmtrc
 .travis.yml
