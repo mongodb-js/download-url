@@ -168,4 +168,24 @@ describe('mongodb-download-url', function() {
       });
     });
   });
+
+  describe('options', function() {
+    it('should handle nulls', function() {
+      assert.doesNotThrow(function() {
+        resolve.options();
+      });
+    });
+
+    it('should default version to `stable`', function() {
+      assert.equal(resolve.options().version, 'stable');
+    });
+
+    it('should use the MONGODB_VERSION environment variable for version', function() {
+      process.env.MONGODB_VERSION = '2.6.11';
+      var res = resolve.options();
+      delete process.env.MONGODB_VERSION;
+
+      assert.equal(res.version, '2.6.11');
+    });
+  });
 });

@@ -210,24 +210,17 @@ function resolve(opts, fn) {
   });
 }
 
-module.exports = function(opts, fn) {
-  if (Array.isArray(opts)) {
-    var tasks = {};
-
-    opts.map(function(opt) {
-      tasks[opt.version] = module.exports.bind(null, opt);
-    });
-
-    return async.parallel(tasks, fn);
-  }
-
+function options(opts) {
   if (typeof opts === 'string') {
     opts = {
       version: opts
     };
   }
 
+  opts = opts || {};
+
   defaults(opts, {
+    version: process.env.MONGODB_VERSION || 'stable',
     arch: ARCH,
     platform: PLATFORM,
     branch: 'master',
@@ -239,8 +232,26 @@ module.exports = function(opts, fn) {
   parseBits(opts);
   parseFileExtension(opts);
   parseDistro(opts);
+  return opts;
+}
+
+
+function getDownloadURL(opts, fn) {
+  if (Array.isArray(opts)) {
+    var tasks = {};
+
+    opts.map(function(opt) {
+      tasks[opt.version] = getDownloadURL.bind(null, opt);
+    });
+
+    return async.parallel(tasks, fn);
+  }
+
+  options(opts);
 
   debug('Building URL for options `%j`', opts);
-
   resolve(opts, fn);
-};
+}
+
+module.exports = getDownloadURL;
+module.exports.options = options;
