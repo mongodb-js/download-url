@@ -135,6 +135,8 @@ function parseDistro(opts) {
     } else if (opts.version.charAt(0) === '2') {
       // 2.x did not ship ssl for windows.
       opts.distro = '2008plus';
+    } else if (opts.platform === 'win32' && opts.bits === '32') {
+      opts.distro = '';
     } else {
       opts.distro = '2008plus-ssl';
     }
@@ -142,6 +144,18 @@ function parseDistro(opts) {
       opts.distro += '_debug';
     }
   }
+  return opts;
+}
+
+function parseArch(opts) {
+  if (opts.bits === '32' && opts.platform === 'linux') {
+    opts.arch = 'i686';
+  } else if (opts.bits === '32' && opts.platform === 'win32') {
+    opts.arch = 'i386';
+  } else {
+    opts.arch = 'x86_64';
+  }
+
   return opts;
 }
 
@@ -169,7 +183,7 @@ function resolve(opts, fn) {
     }
 
     var extraDash = '-';
-    if (opts.platform === 'osx') {
+    if (opts.distro.length === 0) {
       extraDash = '';
     }
 
@@ -178,8 +192,9 @@ function resolve(opts, fn) {
 
     if (opts.enterprise) {
       hostname = 'downloads.mongodb.com';
-      artifact = format('mongodb-%s-x86_64-enterprise-%s',
+      artifact = format('mongodb-%s-%s-enterprise-%s',
         opts.platform,
+        opts.arch,
         [
           opts.distro,
           extraDash,
@@ -188,15 +203,16 @@ function resolve(opts, fn) {
           opts.ext
         ].join(''));
     } else if (opts.platform === 'linux') {
-      artifact = format('mongodb-%s-x86_64-%s',
+      artifact = format('mongodb-%s-%s-%s',
         opts.platform,
+        opts.arch,
         [
           opts.debug ? '-debugsymbols-' : '',
           versionId,
           opts.ext
         ].join(''));
     } else {
-      artifact = 'mongodb-' + opts.platform + '-x86_64-' + opts.distro + extraDash
+      artifact = 'mongodb-' + opts.platform + '-' + opts.arch + '-' + opts.distro + extraDash
         + (opts.debug ? '-debugsymbols-' : '') + versionId + opts.ext;
     }
 
@@ -232,6 +248,7 @@ function options(opts) {
   parseBits(opts);
   parseFileExtension(opts);
   parseDistro(opts);
+  parseArch(opts);
   return opts;
 }
 
