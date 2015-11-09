@@ -62,6 +62,16 @@ describe('mongodb-download-url', function() {
         'http://downloads.mongodb.com/linux/mongodb-linux-x86_64'
         + '-enterprise-ubuntu1404-3.1.9.tgz');
     });
+
+    it('should resolve 3.0.7 (32-bit)', function(done) {
+      var query = {
+        version: '3.0.7',
+        platform: 'linux',
+        bits: 32
+      };
+      verify(done, query,
+        'http://fastdl.mongodb.org/linux/mongodb-linux-i686-3.0.7.tgz');
+    });
   });
 
   describe('windows', function() {
@@ -93,6 +103,15 @@ describe('mongodb-download-url', function() {
       };
       verify(done, query,
         'http://fastdl.mongodb.org/win32/mongodb-win32-x86_64-2008plus-2.6.11.zip');
+    });
+    it('should resolve 3.0.7 (32-bit)', function(done) {
+      var query = {
+        version: '3.0.7',
+        platform: 'win32',
+        bits: 32
+      };
+      verify(done, query,
+        'http://fastdl.mongodb.org/win32/mongodb-win32-i386-3.0.7.zip');
     });
   });
 
