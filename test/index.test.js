@@ -7,7 +7,9 @@ function verify(done, query, expectedURL) {
     assert.ifError(err);
     assert.equal(res.url, expectedURL);
 
-    got(res.url, {method: 'HEAD'}, function(badUrl) {
+    got(res.url, {
+      method: 'HEAD'
+    }, function(badUrl) {
       if (badUrl) {
         return done(new Error('The URL `' + res.url + '` returned: ' + badUrl.message));
       }
