@@ -34,7 +34,7 @@
     "eslint-config-mongodb-js": "^2.0.0",
     "got": "^5.1.0",
     "istanbul": "^0.4.0",
-    "mocha": "~2.4.5",
+    "mocha": "~2.5.2",
     "mongodb-js-fmt": "0.0.3",
     "mongodb-js-precommit": "^0.2.8",
     "pre-commit": "^1.1.2"
