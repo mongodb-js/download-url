@@ -34,8 +34,8 @@
     "eslint-config-mongodb-js": "^2.0.0",
     "got": "^5.1.0",
     "istanbul": "^0.4.0",
-    "mocha": "~3.0.2",
-    "mongodb-js-fmt": "0.0.3",
+    "mocha": "^3.0.2",
+    "mongodb-js-fmt": "^0.0.3",
     "mongodb-js-precommit": "^0.2.8",
     "pre-commit": "^1.1.2"
   },
@@ -45,9 +45,9 @@
   ],
   "repository": {
     "type": "git",
-    "url": "http://github.com/mongodb-js/mongodb-download-url.git"
+    "url": "http://github.com/mongodb-js/download-url.git"
   },
   "author": "Lucas Hrabovsky <hrabovsky.lucas@gmail.com> (http://imlucas.com)",
   "license": "Apache-2.0",
-  "homepage": "http://github.com/mongodb-js/mongodb-download-url"
+  "homepage": "http://github.com/mongodb-js/download-url"
 }
