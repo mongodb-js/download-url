@@ -1,5 +1,5 @@
 var resolve = require('../');
-var got = require('got');
+var request = require('request');
 var assert = require('assert');
 
 function verify(done, query, expectedURL) {
@@ -7,7 +7,7 @@ function verify(done, query, expectedURL) {
     assert.ifError(err);
     assert.equal(res.url, expectedURL);
 
-    got(res.url, {
+    request(res.url, {
       method: 'HEAD'
     }, function(badUrl) {
       if (badUrl) {
