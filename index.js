@@ -219,7 +219,7 @@ function resolve(opts, fn) {
     opts.name = 'mongodb';
     opts.version = versionId;
     opts.artifact = artifact;
-    opts.url = format('http://%s/%s/%s', hostname, opts.platform, artifact);
+    opts.url = format('https://%s/%s/%s', hostname, opts.platform, artifact);
 
     debug('fully resolved', JSON.stringify(opts, null, 2));
     fn(null, opts);
