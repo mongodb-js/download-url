@@ -19,8 +19,8 @@ function verify(done, query, expectedURL) {
 }
 
 describe('mongodb-download-url', function() {
-  // - http://fastdl.mongodb.org/linux/mongodb-linux-x86_64-2.4.14.tgz
-  // + http://fastdl.mongodb.org/linux/mongodb-linux-x86_64-linux_64-2.4.14.tgz
+  // - https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-2.4.14.tgz
+  // + https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-linux_64-2.4.14.tgz
   describe('linux', function() {
     it('should resolve 2.4.14', function(done) {
       var query = {
@@ -29,7 +29,7 @@ describe('mongodb-download-url', function() {
         bits: 64
       };
       verify(done, query,
-        'http://fastdl.mongodb.org/linux/mongodb-linux-x86_64-2.4.14.tgz');
+        'https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-2.4.14.tgz');
     });
 
     it('should resolve 2.6.11', function(done) {
@@ -39,7 +39,7 @@ describe('mongodb-download-url', function() {
         bits: 64
       };
       verify(done, query,
-        'http://fastdl.mongodb.org/linux/mongodb-linux-x86_64-2.6.11.tgz');
+        'https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-2.6.11.tgz');
     });
 
     it('should resolve 3.1.9', function(done) {
@@ -49,7 +49,7 @@ describe('mongodb-download-url', function() {
         bits: 64
       };
       verify(done, query,
-        'http://fastdl.mongodb.org/linux/mongodb-linux-x86_64-3.1.9.tgz');
+        'https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-3.1.9.tgz');
     });
 
     it('should resolve 3.1.9 enterprise', function(done) {
@@ -61,7 +61,7 @@ describe('mongodb-download-url', function() {
         bits: 64
       };
       verify(done, query,
-        'http://downloads.mongodb.com/linux/mongodb-linux-x86_64'
+        'https://downloads.mongodb.com/linux/mongodb-linux-x86_64'
         + '-enterprise-ubuntu1404-3.1.9.tgz');
     });
 
@@ -72,7 +72,7 @@ describe('mongodb-download-url', function() {
         bits: 32
       };
       verify(done, query,
-        'http://fastdl.mongodb.org/linux/mongodb-linux-i686-3.0.7.tgz');
+        'https://fastdl.mongodb.org/linux/mongodb-linux-i686-3.0.7.tgz');
     });
   });
 
@@ -84,7 +84,7 @@ describe('mongodb-download-url', function() {
         bits: 64
       };
       verify(done, query,
-        'http://fastdl.mongodb.org/win32/mongodb-win32-x86_64-2008plus-ssl-3.1.9.zip');
+        'https://fastdl.mongodb.org/win32/mongodb-win32-x86_64-2008plus-ssl-3.1.9.zip');
     });
     it('should resolve 3.1.19 enterprise', function(done) {
       var query = {
@@ -94,7 +94,7 @@ describe('mongodb-download-url', function() {
         bits: 64
       };
       verify(done, query,
-        'http://downloads.mongodb.com/win32/'
+        'https://downloads.mongodb.com/win32/'
         + 'mongodb-win32-x86_64-enterprise-windows-64-3.1.9.zip');
     });
     it('should resolve 2.6.11', function(done) {
@@ -104,7 +104,7 @@ describe('mongodb-download-url', function() {
         bits: 64
       };
       verify(done, query,
-        'http://fastdl.mongodb.org/win32/mongodb-win32-x86_64-2008plus-2.6.11.zip');
+        'https://fastdl.mongodb.org/win32/mongodb-win32-x86_64-2008plus-2.6.11.zip');
     });
     it('should resolve 3.0.7 (32-bit)', function(done) {
       var query = {
@@ -113,7 +113,7 @@ describe('mongodb-download-url', function() {
         bits: 32
       };
       verify(done, query,
-        'http://fastdl.mongodb.org/win32/mongodb-win32-i386-3.0.7.zip');
+        'https://fastdl.mongodb.org/win32/mongodb-win32-i386-3.0.7.zip');
     });
   });
 
@@ -126,11 +126,11 @@ describe('mongodb-download-url', function() {
         bits: 64
       };
       verify(done, query,
-        'http://downloads.mongodb.com/osx/mongodb-osx-x86_64-enterprise-3.1.9.tgz');
+        'https://downloads.mongodb.com/osx/mongodb-osx-x86_64-enterprise-3.1.9.tgz');
     });
   });
-
-  describe('evergreen', function() {
+  // NOTE (imlucas): This is pretty unused as far as I know...
+  describe.skip('evergreen', function() {
     it('should resolve a git commit sha1', function(done) {
       var sha = '610765fdb94eebf612bd0172ec081ccc21110103';
       var query = {
