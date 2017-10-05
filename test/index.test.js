@@ -128,7 +128,19 @@ describe('mongodb-download-url', function() {
       verify(done, query,
         'https://downloads.mongodb.com/osx/mongodb-osx-x86_64-enterprise-3.1.9.tgz');
     });
+
+    it('should resolve 3.5.13 community', function(done) {
+      var query = {
+        version: '3.5.13',
+        platform: 'osx',
+        bits: 64
+      };
+
+      verify(done, query,
+        'https://fastdl.mongodb.org/osx/mongodb-osx-ssl-x86_64-3.5.13.tgz');
+    });
   });
+
   // NOTE (imlucas): This is pretty unused as far as I know...
   describe.skip('evergreen', function() {
     it('should resolve a git commit sha1', function(done) {
