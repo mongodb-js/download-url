@@ -177,6 +177,10 @@ function resolve(opts, fn) {
     handler = search.bind(null, opts);
   }
 
+  if (opts.platform === 'osx') {
+    opts.ssl = true;
+  }
+
   handler(function(err, versionId) {
     if (err) {
       return fn(err);
@@ -212,8 +216,9 @@ function resolve(opts, fn) {
           opts.ext
         ].join(''));
     } else {
-      artifact = 'mongodb-' + opts.platform + '-' + opts.arch + '-' + opts.distro + extraDash
-        + (opts.debug ? '-debugsymbols-' : '') + versionId + opts.ext;
+      artifact = 'mongodb-' + opts.platform + '-' + (opts.ssl ? 'ssl-' : '') +
+        opts.arch + '-' + opts.distro + extraDash + (opts.debug ? '-debugsymbols-' : '') +
+        versionId + opts.ext;
     }
 
     opts.name = 'mongodb';
