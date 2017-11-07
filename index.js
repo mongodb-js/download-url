@@ -177,13 +177,16 @@ function resolve(opts, fn) {
     handler = search.bind(null, opts);
   }
 
-  if (opts.platform === 'osx') {
-    opts.ssl = true;
-  }
-
   handler(function(err, versionId) {
     if (err) {
       return fn(err);
+    }
+
+    // For osx, force ssl on versions >=3.2
+    // TODO: Lets find a more elegant way to try ssl first, and
+    // then resort to non-ssl if it does not exist
+    if (opts.platform === 'osx' && semver.satisfies(versionId, '>=3.2')) {
+      opts.ssl = true;
     }
 
     var extraDash = '-';
