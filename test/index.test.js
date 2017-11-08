@@ -139,6 +139,39 @@ describe('mongodb-download-url', function() {
       verify(done, query,
         'https://fastdl.mongodb.org/osx/mongodb-osx-ssl-x86_64-3.5.13.tgz');
     });
+
+    it('should resolve 3.0.0 without ssl', function(done) {
+      var query = {
+        version: '3.0.0',
+        platform: 'osx',
+        bits: 64
+      };
+
+      verify(done, query,
+        'https://fastdl.mongodb.org/osx/mongodb-osx-x86_64-3.0.0.tgz');
+    });
+
+    it('should resolve 2.6.0 without ssl', function(done) {
+      var query = {
+        version: '2.6.0',
+        platform: 'osx',
+        bits: 64
+      };
+
+      verify(done, query,
+        'https://fastdl.mongodb.org/osx/mongodb-osx-x86_64-2.6.0.tgz');
+    });
+
+    it('should resolve 3.2.0 with ssl', function(done) {
+      var query = {
+        version: '3.2.0',
+        platform: 'osx',
+        bits: 64
+      };
+
+      verify(done, query,
+        'https://fastdl.mongodb.org/osx/mongodb-osx-ssl-x86_64-3.2.0.tgz');
+    });
   });
 
   // NOTE (imlucas): This is pretty unused as far as I know...
