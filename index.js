@@ -185,7 +185,7 @@ function resolve(opts, fn) {
     // For osx, force ssl on versions >=3.2
     // TODO: Lets find a more elegant way to try ssl first, and
     // then resort to non-ssl if it does not exist
-    if (opts.platform === 'osx' && semver.satisfies(versionId, '>=3.2')) {
+    if (opts.platform === 'osx' && semver.gte(versionId, '3.2.0')) {
       opts.ssl = true;
     }
 
