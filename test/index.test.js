@@ -172,6 +172,17 @@ describe('mongodb-download-url', function() {
       verify(done, query,
         'https://fastdl.mongodb.org/osx/mongodb-osx-ssl-x86_64-3.2.0.tgz');
     });
+
+    it('should resolve 3.6.0-rc3 with ssl', function(done) {
+      var query = {
+        version: '3.6.0-rc3',
+        platform: 'osx',
+        bits: 64
+      };
+
+      verify(done, query,
+        'https://fastdl.mongodb.org/osx/mongodb-osx-ssl-x86_64-3.6.0-rc3.tgz');
+    });
   });
 
   // NOTE (imlucas): This is pretty unused as far as I know...
