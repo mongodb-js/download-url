@@ -1,6 +1,6 @@
 {
   "name": "mongodb-download-url",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "Lookup download URL's for MongoDB versions.",
   "scripts": {
     "fmt": "mongodb-js-fmt test/*.js bin/*.js index.js",
