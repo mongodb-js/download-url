@@ -8,6 +8,7 @@ var async = require('async');
 var defaults = require('lodash.defaults');
 var format = require('util').format;
 var debug = require('debug')('mongodb-download-url');
+var fs = require('fs');
 
 var EVERGREEN_ENDPOINT = 'http://mci-motu.10gen.cc:9090';
 
@@ -124,10 +125,76 @@ function parseFileExtension(opts) {
   return opts;
 }
 
+// mongodb-linux-x86_64-rhel62-3.6.2.tgz
+//
+// Red Hat Enterprise Linux Server release 7.2 (Maipo)
+function parseRHEL(data) {
+  if (data.toString().match('7.2')) return 'rhel72';
+  if (data.toString().match('6.0')) return 'rhel60';
+}
+
+//  mongodb-linux-x86_64-suse12-3.6.2.tgz
+//
+//  SUSE Linux Enterprise Server 11 (x86_64)
+//  VERSION = 11
+//  PATCHLEVEL = 4
+function parseSuse(data) {
+  if (data.toString().match('Server 11')) return 'suse11';
+  if (data.toString().match('Server 12')) return 'suse12';
+}
+
+// mongodb-linux-x86_64-ubuntu1204-3.6.2.tgz
+//
+// DISTRIB_ID=Ubuntu
+// DISTRIB_RELEASE=16.04
+// DISTRIB_CODENAME=xenial
+// DISTRIB_DESCRIPTION="Ubuntu 16.04 LTS"
+function parseUbuntu(data) {
+  if (data.toString().match('16.04')) return 'ubuntu1604';
+  if (data.toString().match('14.04')) return 'ubuntu1404';
+  if (data.toString().match('12.04')) return 'ubuntu1204';
+}
+
+function getLinuxDistro() {
+  var formattedDistro;
+  var distros = [
+    { '/etc/redhat-release': 'Rhel' },
+    { '/etc/SuSE-release': 'Suse' },
+    { '/etc/lsb-release': 'Ubuntu' }
+  ];
+
+  distros.forEach(function(distro, i) {
+    var distroInfo;
+    try {
+      distroInfo = fs.readFileSync(Object.keys(distro)[0]);
+    } catch (e) {
+      if (i === distros.length - 1) {
+        return new Error('Could not determine Linux distribution');
+      }
+    }
+
+    switch (distros[i][Object.keys(distro)]) {
+      case 'Rhel':
+        formattedDistro = parseRHEL(distroInfo.toString());
+        break;
+      case 'Suse':
+        formattedDistro = parseSuse(distroInfo.toString());
+        break;
+      case 'Ubuntu':
+        formattedDistro = parseUbuntu(distroInfo.toString());
+        break;
+      default:
+        return;
+    }
+  });
+  return formattedDistro;
+}
+
 function parseDistro(opts) {
   if (!opts.distro) {
     if (opts.platform === 'linux') {
       opts.distro = 'linux_' + opts.bits;
+      if (!opts.linuxDistro) opts.linuxDistro = getLinuxDistro();
     } else if (opts.platform === 'osx') {
       opts.distro = '';
     } else if (opts.enterprise) {
@@ -210,9 +277,11 @@ function resolve(opts, fn) {
           opts.ext
         ].join(''));
     } else if (opts.platform === 'linux') {
-      artifact = format('mongodb-%s-%s-%s',
+      // TODO are all the ZAPs enterprise?
+      artifact = format('mongodb-%s-%s-%s-%s',
         opts.platform,
         opts.arch,
+        opts.linuxDistro,
         [
           opts.debug ? '-debugsymbols-' : '',
           versionId,

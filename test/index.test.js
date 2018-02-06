@@ -74,6 +74,83 @@ describe('mongodb-download-url', function() {
       verify(done, query,
         'https://fastdl.mongodb.org/linux/mongodb-linux-i686-3.0.7.tgz');
     });
+
+    it('should resolve RHEL 6.2', function(done) {
+      var query = {
+        version: '3.6.2',
+        platform: 'linux',
+        linuxDistro: 'rhel62',
+        bits: 64
+      };
+      verify(done, query,
+        'https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-rhel62-3.6.2.tgz');
+    });
+
+    it('should resolve RHEL 7.2', function(done) {
+      var query = {
+        version: '3.6.2',
+        platform: 'linux',
+        linuxDistro: 'rhel72',
+        bits: 64
+      };
+      verify(done, query,
+        'https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-rhel72-3.6.2.tgz');
+    });
+
+    it('should resolve SuSE 11', function(done) {
+      var query = {
+        version: '3.6.2',
+        platform: 'linux',
+        linuxDistro: 'suse11',
+        bits: 64
+      };
+      verify(done, query,
+        'https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-suse11-3.6.2.tgz');
+    });
+
+    it('should resolve SuSE 12', function(done) {
+      var query = {
+        version: '3.6.2',
+        platform: 'linux',
+        linuxDistro: 'suse12',
+        bits: 64
+      };
+      verify(done, query,
+        'https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-suse12-3.6.2.tgz');
+    });
+
+    it('should resolve Ubuntu 16.04', function(done) {
+      var query = {
+        version: '3.6.2',
+        platform: 'linux',
+        linuxDistro: 'ubuntu1604',
+        bits: 64
+      };
+      verify(done, query,
+        'https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-ubuntu1604-3.6.2.tgz');
+    });
+
+    it('should resolve Ubuntu 14.04', function(done) {
+      var query = {
+        version: '3.6.2',
+        platform: 'linux',
+        linuxDistro: 'ubuntu1404',
+        bits: 64
+      };
+      verify(done, query,
+        'https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-ubuntu1404-3.6.2.tgz');
+    });
+
+    it('should resolve Ubuntu 12.04', function(done) {
+      var query = {
+        version: '3.6.2',
+        platform: 'linux',
+        linuxDistro: 'ubuntu1204',
+        bits: 64
+      };
+      verify(done, query,
+        'https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-ubuntu1204-3.6.2.tgz');
+    });
   });
 
   describe('windows', function() {
