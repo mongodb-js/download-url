@@ -156,7 +156,7 @@ function parseUbuntu(data) {
 }
 
 function getLinuxDistro() {
-  var formattedDistro;
+  var formattedDistro = null;
   var distros = [
     { '/etc/redhat-release': 'Rhel' },
     { '/etc/SuSE-release': 'Suse' },
@@ -166,13 +166,13 @@ function getLinuxDistro() {
   distros.forEach(function(distro, i) {
     var distroInfo;
     try {
-      distroInfo = fs.readFileSync(Object.keys(distro)[0]);
+      distroInfo = fs.readFileSync(Object.keys(distro)[0]);  // eslint-disable-line
     } catch (e) {
       if (i === distros.length - 1) {
-        return new Error('Could not determine Linux distribution');
+        return formattedDistro;
       }
+      return;
     }
-
     switch (distros[i][Object.keys(distro)]) {
       case 'Rhel':
         formattedDistro = parseRHEL(distroInfo.toString());
@@ -276,8 +276,16 @@ function resolve(opts, fn) {
           versionId,
           opts.ext
         ].join(''));
-    } else if (opts.platform === 'linux') {
-      // TODO are all the ZAPs enterprise?
+    } else if (opts.platform === 'linux' && !opts.linuxDistro) {
+      artifact = format('mongodb-%s-%s-%s',
+        opts.platform,
+        opts.arch,
+        [
+          opts.debug ? '-debugsymbols-' : '',
+          versionId,
+          opts.ext
+        ].join(''));
+    } else if (opts.platform === 'linux' && opts.linuxDistro) {
       artifact = format('mongodb-%s-%s-%s-%s',
         opts.platform,
         opts.arch,
