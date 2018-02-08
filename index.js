@@ -219,10 +219,11 @@ function parseArch(opts) {
     opts.arch = 'i686';
   } else if (opts.bits === '32' && opts.platform === 'win32') {
     opts.arch = 'i386';
-  } else {
-    opts.arch = 'x86_64';
-  }
-
+  } else if (opts.arch === 's390x' || opts.arch === 'ppc641e') {
+    opts.enterprise = true;
+  } else if (opts.arch.match('arm')) {
+    opts.arch = 'arm64';
+  } else opts.arch = 'x86_64';
   return opts;
 }
 
@@ -270,7 +271,7 @@ function resolve(opts, fn) {
         opts.platform,
         opts.arch,
         [
-          opts.distro,
+          opts.linuxDistro ? opts.linuxDistro : opts.distro,
           extraDash,
           opts.debug ? '-debugsymbols-' : '',
           versionId,
