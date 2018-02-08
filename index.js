@@ -129,6 +129,7 @@ function parseFileExtension(opts) {
 //
 // Red Hat Enterprise Linux Server release 7.2 (Maipo)
 function parseRHEL(data) {
+  if (data.toString().match('7.1')) return 'rhel71';
   if (data.toString().match('7.2')) return 'rhel72';
   if (data.toString().match('6.0')) return 'rhel60';
 }
@@ -156,6 +157,7 @@ function parseUbuntu(data) {
 }
 
 function getLinuxDistro() {
+  // TODO we're not checking Debian
   var formattedDistro = null;
   var distros = [
     { '/etc/redhat-release': 'Rhel' },
@@ -219,7 +221,7 @@ function parseArch(opts) {
     opts.arch = 'i686';
   } else if (opts.bits === '32' && opts.platform === 'win32') {
     opts.arch = 'i386';
-  } else if (opts.arch === 's390x' || opts.arch === 'ppc641e') {
+  } else if (opts.arch === 's390x' || opts.arch === 'ppc64le') {
     opts.enterprise = true;
   } else if (opts.arch.match('arm')) {
     opts.arch = 'arm64';
@@ -245,7 +247,7 @@ function resolve(opts, fn) {
     handler = search.bind(null, opts);
   }
 
-  handler(function(err, versionId) {
+  handler(function(err, versionId) { // eslint-disable-line
     if (err) {
       return fn(err);
     }
