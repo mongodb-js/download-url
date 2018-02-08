@@ -76,6 +76,7 @@ describe('mongodb-download-url', function() {
     });
 
     it('should resolve RHEL 6.2', function(done) {
+      // We support 6.2, and 7.0 community versions
       var query = {
         version: '3.6.2',
         platform: 'linux',
@@ -86,18 +87,21 @@ describe('mongodb-download-url', function() {
         'https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-rhel62-3.6.2.tgz');
     });
 
-    it('should resolve RHEL 7.2', function(done) {
+    it('should resolve PPC RHEL 7.1 Enterprise', function(done) {
       var query = {
         version: '3.6.2',
         platform: 'linux',
-        linuxDistro: 'rhel72',
+        arch: 'ppc64le',
+        enterprise: true,
+        linuxDistro: 'rhel71',
         bits: 64
       };
       verify(done, query,
-        'https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-rhel72-3.6.2.tgz');
+        'https://downloads.mongodb.com/linux/mongodb-linux-ppc64le-enterprise-rhel71-3.6.2.tgz');
     });
 
     it('should resolve SuSE 11', function(done) {
+      // Community
       var query = {
         version: '3.6.2',
         platform: 'linux',
@@ -108,48 +112,55 @@ describe('mongodb-download-url', function() {
         'https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-suse11-3.6.2.tgz');
     });
 
-    it('should resolve SuSE 12', function(done) {
+    it('should resolve x390s SuSE 12 Enterprise', function(done) {
       var query = {
         version: '3.6.2',
+        arch: 's390x',
         platform: 'linux',
+        enterprise: true,
         linuxDistro: 'suse12',
         bits: 64
       };
       verify(done, query,
-        'https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-suse12-3.6.2.tgz');
+        'https://downloads.mongodb.com/linux/mongodb-linux-s390x-enterprise-suse12-3.6.2.tgz');
     });
 
-    it('should resolve Ubuntu 16.04', function(done) {
+    it('should resolve SuSE 11 Enterprise', function(done) {
       var query = {
         version: '3.6.2',
         platform: 'linux',
+        enterprise: true,
+        linuxDistro: 'suse11',
+        bits: 64
+      };
+      verify(done, query,
+        'https://downloads.mongodb.com/linux/mongodb-linux-x86_64-enterprise-suse11-3.6.2.tgz');
+    });
+
+    it('should resolve PPC Ubuntu 16.04 Enterprise', function(done) {
+      var query = {
+        version: '3.6.2',
+        platform: 'linux',
+        arch: 'ppc64le',
+        enterprise: true,
         linuxDistro: 'ubuntu1604',
         bits: 64
       };
       verify(done, query,
-        'https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-ubuntu1604-3.6.2.tgz');
+        'https://downloads.mongodb.com/linux/mongodb-linux-ppc64le-enterprise-ubuntu1604-3.6.2.tgz');
     });
 
-    it('should resolve Ubuntu 14.04', function(done) {
+    it('should resolve ARM Ubuntu 16.04', function(done) {
+      // Community
       var query = {
         version: '3.6.2',
         platform: 'linux',
-        linuxDistro: 'ubuntu1404',
+        arch: 'arm64',
+        linuxDistro: 'ubuntu1604',
         bits: 64
       };
       verify(done, query,
-        'https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-ubuntu1404-3.6.2.tgz');
-    });
-
-    it('should resolve Ubuntu 12.04', function(done) {
-      var query = {
-        version: '3.6.2',
-        platform: 'linux',
-        linuxDistro: 'ubuntu1204',
-        bits: 64
-      };
-      verify(done, query,
-        'https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-ubuntu1204-3.6.2.tgz');
+        'https://fastdl.mongodb.org/linux/mongodb-linux-arm64-ubuntu1604-3.6.2.tgz');
     });
   });
 
