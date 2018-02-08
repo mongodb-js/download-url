@@ -279,7 +279,7 @@ function resolve(opts, fn) {
           versionId,
           opts.ext
         ].join(''));
-    } else if (opts.platform === 'linux' && !opts.linuxDistro) {
+    } else if (opts.platform === 'linux' && opts.linuxDistro === 'legacy') {
       artifact = format('mongodb-%s-%s-%s',
         opts.platform,
         opts.arch,

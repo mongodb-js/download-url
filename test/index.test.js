@@ -26,6 +26,7 @@ describe('mongodb-download-url', function() {
       var query = {
         version: '2.4.14',
         platform: 'linux',
+        linuxDistro: 'legacy',
         bits: 64
       };
       verify(done, query,
@@ -36,6 +37,7 @@ describe('mongodb-download-url', function() {
       var query = {
         version: '2.6.11',
         platform: 'linux',
+        linuxDistro: 'legacy',
         bits: 64
       };
       verify(done, query,
@@ -46,6 +48,7 @@ describe('mongodb-download-url', function() {
       var query = {
         version: '3.1.9',
         platform: 'linux',
+        linuxDistro: 'legacy',
         bits: 64
       };
       verify(done, query,
@@ -69,6 +72,7 @@ describe('mongodb-download-url', function() {
       var query = {
         version: '3.0.7',
         platform: 'linux',
+        linuxDistro: 'legacy',
         bits: 32
       };
       verify(done, query,
