@@ -156,9 +156,9 @@ function parseUbuntu(data) {
   if (data.toString().match('12.04')) return 'ubuntu1204';
 }
 
-function getLinuxDistro(opts) {
+function getLinuxDistro() {
   // TODO we're not checking Debian
-  var formattedDistro = opts.linuxDistro || null;
+  var formattedDistro = null;
   var distros = [
     { '/etc/redhat-release': 'Rhel' },
     { '/etc/SuSE-release': 'Suse' },
@@ -196,7 +196,7 @@ function parseDistro(opts) {
   if (!opts.distro) {
     if (opts.platform === 'linux') {
       opts.distro = 'linux_' + opts.bits;
-      if (opts.evergreen) opts.linuxDistro = getLinuxDistro(opts);
+      if (opts.evergreen) opts.linuxDistro = opts.linuxDistro ? opts.linuxDistro : getLinuxDistro(opts);
     } else if (opts.platform === 'osx') {
       opts.distro = '';
     } else if (opts.enterprise) {
