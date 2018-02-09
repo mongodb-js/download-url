@@ -224,6 +224,7 @@ function parseArch(opts) {
   } else if (opts.arch === 's390x' || opts.arch === 'ppc64le') {
     opts.enterprise = true;
   } else if (opts.arch.match('arm')) {
+    // ARM can be Enterprise or community, how do we decide?
     opts.arch = 'arm64';
   } else opts.arch = 'x86_64';
   return opts;

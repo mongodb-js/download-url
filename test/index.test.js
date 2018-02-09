@@ -166,6 +166,19 @@ describe('mongodb-download-url', function() {
       verify(done, query,
         'https://fastdl.mongodb.org/linux/mongodb-linux-arm64-ubuntu1604-3.6.2.tgz');
     });
+
+    it('should resolve ARM Ubuntu 16.04 Enterprise', function(done) {
+      var query = {
+        version: '3.6.2',
+        platform: 'linux',
+        enterprise: true,
+        arch: 'arm64',
+        linuxDistro: 'ubuntu1604',
+        bits: 64
+      };
+      verify(done, query,
+        'https://downloads.mongodb.com/linux/mongodb-linux-arm64-enterprise-ubuntu1604-3.6.2.tgz');
+    });
   });
 
   describe('windows', function() {
