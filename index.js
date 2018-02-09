@@ -196,7 +196,7 @@ function parseDistro(opts) {
   if (!opts.distro) {
     if (opts.platform === 'linux') {
       opts.distro = 'linux_' + opts.bits;
-      if (opts.evergreen) opts.linuxDistro = opts.linuxDistro ? opts.linuxDistro : getLinuxDistro(opts);
+      if (opts.evergreen) opts.linuxDistro = opts.linuxDistro || getLinuxDistro(opts);
     } else if (opts.platform === 'osx') {
       opts.distro = '';
     } else if (opts.enterprise) {
@@ -280,25 +280,27 @@ function resolve(opts, fn) {
           versionId,
           opts.ext
         ].join(''));
-    } else if (opts.platform === 'linux' && !opts.evergreen) {
-      artifact = format('mongodb-%s-%s-%s',
-        opts.platform,
-        opts.arch,
-        [
-          opts.debug ? '-debugsymbols-' : '',
-          versionId,
-          opts.ext
-        ].join(''));
-    } else if (opts.platform === 'linux' && opts.evergreen) {
-      artifact = format('mongodb-%s-%s-%s-%s',
-        opts.platform,
-        opts.arch,
-        opts.linuxDistro,
-        [
-          opts.debug ? '-debugsymbols-' : '',
-          versionId,
-          opts.ext
-        ].join(''));
+    } else if (opts.platform === 'linux') {
+      if (opts.evergreen) {
+        artifact = format('mongodb-%s-%s-%s-%s',
+          opts.platform,
+          opts.arch,
+          opts.linuxDistro,
+          [
+            opts.debug ? '-debugsymbols-' : '',
+            versionId,
+            opts.ext
+          ].join(''));
+      } else {
+        artifact = format('mongodb-%s-%s-%s',
+          opts.platform,
+          opts.arch,
+          [
+            opts.debug ? '-debugsymbols-' : '',
+            versionId,
+            opts.ext
+          ].join(''));
+      }
     } else {
       artifact = 'mongodb-' + opts.platform + '-' + (opts.ssl ? 'ssl-' : '') +
         opts.arch + '-' + opts.distro + extraDash + (opts.debug ? '-debugsymbols-' : '') +
