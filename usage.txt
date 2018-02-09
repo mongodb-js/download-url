@@ -11,5 +11,6 @@ Options:
   --bits               CPU arch [Default: `process.arch`].
   --enterprise         Use MongoDB enterprise [Default: `false`].
   --debug              Debug build [Default: `false`].
+  --evergreen          Check Linux distributions for running on Evergreen [Default: `false`].
   -h --help            Show this screen.
   --version            Show version.

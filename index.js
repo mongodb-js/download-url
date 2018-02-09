@@ -156,9 +156,9 @@ function parseUbuntu(data) {
   if (data.toString().match('12.04')) return 'ubuntu1204';
 }
 
-function getLinuxDistro() {
+function getLinuxDistro(opts) {
   // TODO we're not checking Debian
-  var formattedDistro = null;
+  var formattedDistro = opts.linuxDistro || null;
   var distros = [
     { '/etc/redhat-release': 'Rhel' },
     { '/etc/SuSE-release': 'Suse' },
@@ -196,7 +196,7 @@ function parseDistro(opts) {
   if (!opts.distro) {
     if (opts.platform === 'linux') {
       opts.distro = 'linux_' + opts.bits;
-      if (!opts.linuxDistro) opts.linuxDistro = getLinuxDistro();
+      if (opts.evergreen) opts.linuxDistro = getLinuxDistro(opts);
     } else if (opts.platform === 'osx') {
       opts.distro = '';
     } else if (opts.enterprise) {
@@ -280,7 +280,7 @@ function resolve(opts, fn) {
           versionId,
           opts.ext
         ].join(''));
-    } else if (opts.platform === 'linux' && opts.linuxDistro === 'legacy') {
+    } else if (opts.platform === 'linux' && !opts.evergreen) {
       artifact = format('mongodb-%s-%s-%s',
         opts.platform,
         opts.arch,
@@ -289,7 +289,7 @@ function resolve(opts, fn) {
           versionId,
           opts.ext
         ].join(''));
-    } else if (opts.platform === 'linux' && opts.linuxDistro) {
+    } else if (opts.platform === 'linux' && opts.evergreen) {
       artifact = format('mongodb-%s-%s-%s-%s',
         opts.platform,
         opts.arch,
@@ -330,7 +330,8 @@ function options(opts) {
     platform: PLATFORM,
     branch: 'master',
     bits: '64',
-    debug: false
+    debug: false,
+    evergreen: false
   });
 
   parsePlatform(opts);

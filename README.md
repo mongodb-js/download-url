@@ -23,6 +23,7 @@ Options:
   --platform           The operating system [Default: `process.platform`].
   --bits               CPU arch [Default: `process.arch`].
   --debug              Debug build [Default: `false`].
+  --evergreen          Check Linux distributions for running on Evergreen [Default: `false`].
   -h --help            Show this screen.
   --version            Show version.
 ```

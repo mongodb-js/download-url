@@ -26,7 +26,6 @@ describe('mongodb-download-url', function() {
       var query = {
         version: '2.4.14',
         platform: 'linux',
-        linuxDistro: 'legacy',
         bits: 64
       };
       verify(done, query,
@@ -37,7 +36,6 @@ describe('mongodb-download-url', function() {
       var query = {
         version: '2.6.11',
         platform: 'linux',
-        linuxDistro: 'legacy',
         bits: 64
       };
       verify(done, query,
@@ -48,7 +46,6 @@ describe('mongodb-download-url', function() {
       var query = {
         version: '3.1.9',
         platform: 'linux',
-        linuxDistro: 'legacy',
         bits: 64
       };
       verify(done, query,
@@ -72,7 +69,6 @@ describe('mongodb-download-url', function() {
       var query = {
         version: '3.0.7',
         platform: 'linux',
-        linuxDistro: 'legacy',
         bits: 32
       };
       verify(done, query,
@@ -85,6 +81,7 @@ describe('mongodb-download-url', function() {
         version: '3.6.2',
         platform: 'linux',
         linuxDistro: 'rhel62',
+        evergreen: true,
         bits: 64
       };
       verify(done, query,
@@ -98,6 +95,7 @@ describe('mongodb-download-url', function() {
         arch: 'ppc64le',
         enterprise: true,
         linuxDistro: 'rhel71',
+        evergreen: true,
         bits: 64
       };
       verify(done, query,
@@ -110,6 +108,7 @@ describe('mongodb-download-url', function() {
         version: '3.6.2',
         platform: 'linux',
         linuxDistro: 'suse11',
+        evergreen: true,
         bits: 64
       };
       verify(done, query,
@@ -123,6 +122,7 @@ describe('mongodb-download-url', function() {
         platform: 'linux',
         enterprise: true,
         linuxDistro: 'suse12',
+        evergreen: true,
         bits: 64
       };
       verify(done, query,
@@ -135,6 +135,7 @@ describe('mongodb-download-url', function() {
         platform: 'linux',
         enterprise: true,
         linuxDistro: 'suse11',
+        evergreen: true,
         bits: 64
       };
       verify(done, query,
@@ -148,6 +149,7 @@ describe('mongodb-download-url', function() {
         arch: 'ppc64le',
         enterprise: true,
         linuxDistro: 'ubuntu1604',
+        evergreen: true,
         bits: 64
       };
       verify(done, query,
@@ -161,6 +163,7 @@ describe('mongodb-download-url', function() {
         platform: 'linux',
         arch: 'arm64',
         linuxDistro: 'ubuntu1604',
+        evergreen: true,
         bits: 64
       };
       verify(done, query,
@@ -174,6 +177,7 @@ describe('mongodb-download-url', function() {
         enterprise: true,
         arch: 'arm64',
         linuxDistro: 'ubuntu1604',
+        evergreen: true,
         bits: 64
       };
       verify(done, query,
