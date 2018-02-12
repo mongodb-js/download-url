@@ -128,10 +128,11 @@ function parseFileExtension(opts) {
 // mongodb-linux-x86_64-rhel62-3.6.2.tgz
 //
 // Red Hat Enterprise Linux Server release 7.2 (Maipo)
-function parseRHEL(data) {
-  if (data.toString().match('7.1')) return 'rhel71';
-  if (data.toString().match('7.2')) return 'rhel72';
-  if (data.toString().match('6.0')) return 'rhel60';
+function parseRhel(data) {
+  if (data.match('7.1')) return 'rhel71';
+  if (data.match('7.2')) return 'rhel72';
+  if (data.match('6.0')) return 'rhel60';
+  return new Error('Could not determine RHEL version');
 }
 
 //  mongodb-linux-x86_64-suse12-3.6.2.tgz
@@ -140,8 +141,9 @@ function parseRHEL(data) {
 //  VERSION = 11
 //  PATCHLEVEL = 4
 function parseSuse(data) {
-  if (data.toString().match('Server 11')) return 'suse11';
-  if (data.toString().match('Server 12')) return 'suse12';
+  if (data.match('Server 11')) return 'suse11';
+  if (data.match('Server 12')) return 'suse12';
+  return new Error('Could not determine SUSE version');
 }
 
 // mongodb-linux-x86_64-ubuntu1204-3.6.2.tgz
@@ -151,42 +153,24 @@ function parseSuse(data) {
 // DISTRIB_CODENAME=xenial
 // DISTRIB_DESCRIPTION="Ubuntu 16.04 LTS"
 function parseUbuntu(data) {
-  if (data.toString().match('16.04')) return 'ubuntu1604';
-  if (data.toString().match('14.04')) return 'ubuntu1404';
-  if (data.toString().match('12.04')) return 'ubuntu1204';
+  if (data.match('16.04')) return 'ubuntu1604';
+  if (data.match('14.04')) return 'ubuntu1404';
+  if (data.match('12.04')) return 'ubuntu1204';
+  return new Error('Could not determine Ubuntu version');
 }
 
 function getLinuxDistro() {
-  // TODO we're not checking Debian
-  var formattedDistro = null;
   var distros = [
-    { '/etc/redhat-release': 'Rhel' },
-    { '/etc/SuSE-release': 'Suse' },
-    { '/etc/lsb-release': 'Ubuntu' }
+    ['/etc/redhat-release', parseRhel],
+    ['/etc/SuSE-release', parseSuse],
+    ['/etc/lsb-release', parseUbuntu]
   ];
 
-  distros.forEach(function(distro, i) {
-    var distroInfo;
+  var formattedDistro = distros.reduce(function(result, distro) {
     try {
-      distroInfo = fs.readFileSync(Object.keys(distro)[0]);  // eslint-disable-line
-    } catch (e) {
-      if (i === distros.length - 1) {
-        return formattedDistro;
-      }
-      return;
-    }
-    switch (distros[i][Object.keys(distro)]) {
-      case 'Rhel':
-        formattedDistro = parseRHEL(distroInfo.toString());
-        break;
-      case 'Suse':
-        formattedDistro = parseSuse(distroInfo.toString());
-        break;
-      case 'Ubuntu':
-        formattedDistro = parseUbuntu(distroInfo.toString());
-        break;
-      default:
-        return;
+      return distro[1](fs.readFileSync(distro[0])); // eslint-disable-line
+    } catch (error) {
+      return error;
     }
   });
   return formattedDistro;
