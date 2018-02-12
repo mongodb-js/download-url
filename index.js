@@ -196,7 +196,7 @@ function parseDistro(opts) {
   if (!opts.distro) {
     if (opts.platform === 'linux') {
       opts.distro = 'linux_' + opts.bits;
-      if (opts.evergreen) opts.linuxDistro = opts.linuxDistro || getLinuxDistro(opts);
+      if (opts.evergreen) opts.distro += '-' + getLinuxDistro(opts);
     } else if (opts.platform === 'osx') {
       opts.distro = '';
     } else if (opts.enterprise) {
@@ -224,7 +224,6 @@ function parseArch(opts) {
   } else if (opts.arch === 's390x' || opts.arch === 'ppc64le') {
     opts.enterprise = true;
   } else if (opts.arch.match('arm')) {
-    // ARM can be Enterprise or community, how do we decide?
     opts.arch = 'arm64';
   } else opts.arch = 'x86_64';
   return opts;
@@ -274,7 +273,7 @@ function resolve(opts, fn) {
         opts.platform,
         opts.arch,
         [
-          opts.linuxDistro ? opts.linuxDistro : opts.distro,
+          opts.distro,
           extraDash,
           opts.debug ? '-debugsymbols-' : '',
           versionId,
@@ -285,7 +284,7 @@ function resolve(opts, fn) {
         artifact = format('mongodb-%s-%s-%s-%s',
           opts.platform,
           opts.arch,
-          opts.linuxDistro,
+          opts.distro,
           [
             opts.debug ? '-debugsymbols-' : '',
             versionId,

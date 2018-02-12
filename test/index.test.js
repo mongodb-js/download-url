@@ -80,7 +80,7 @@ describe('mongodb-download-url', function() {
       var query = {
         version: '3.6.2',
         platform: 'linux',
-        linuxDistro: 'rhel62',
+        distro: 'rhel62',
         evergreen: true,
         bits: 64
       };
@@ -94,7 +94,7 @@ describe('mongodb-download-url', function() {
         platform: 'linux',
         arch: 'ppc64le',
         enterprise: true,
-        linuxDistro: 'rhel71',
+        distro: 'rhel71',
         evergreen: true,
         bits: 64
       };
@@ -107,7 +107,7 @@ describe('mongodb-download-url', function() {
       var query = {
         version: '3.6.2',
         platform: 'linux',
-        linuxDistro: 'suse11',
+        distro: 'suse11',
         evergreen: true,
         bits: 64
       };
@@ -121,7 +121,7 @@ describe('mongodb-download-url', function() {
         arch: 's390x',
         platform: 'linux',
         enterprise: true,
-        linuxDistro: 'suse12',
+        distro: 'suse12',
         evergreen: true,
         bits: 64
       };
@@ -134,7 +134,7 @@ describe('mongodb-download-url', function() {
         version: '3.6.2',
         platform: 'linux',
         enterprise: true,
-        linuxDistro: 'suse11',
+        distro: 'suse11',
         evergreen: true,
         bits: 64
       };
@@ -148,7 +148,7 @@ describe('mongodb-download-url', function() {
         platform: 'linux',
         arch: 'ppc64le',
         enterprise: true,
-        linuxDistro: 'ubuntu1604',
+        distro: 'ubuntu1604',
         evergreen: true,
         bits: 64
       };
@@ -162,7 +162,7 @@ describe('mongodb-download-url', function() {
         version: '3.6.2',
         platform: 'linux',
         arch: 'arm64',
-        linuxDistro: 'ubuntu1604',
+        distro: 'ubuntu1604',
         evergreen: true,
         bits: 64
       };
@@ -176,7 +176,7 @@ describe('mongodb-download-url', function() {
         platform: 'linux',
         enterprise: true,
         arch: 'arm64',
-        linuxDistro: 'ubuntu1604',
+        distro: 'ubuntu1604',
         evergreen: true,
         bits: 64
       };
