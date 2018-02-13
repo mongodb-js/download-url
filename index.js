@@ -167,13 +167,18 @@ function getLinuxDistro() {
   ];
 
   var formattedDistro = distros.reduce(function(result, distro) {
+    if (result) return result;
     try {
-      return distro[1](fs.readFileSync(distro[0])); // eslint-disable-line
+      return distro[1](fs.readFileSync(distro[0]).toString()); // eslint-disable-line
     } catch (error) {
-      return error;
+      // Catching file reading error
+      return new Error(error);
     }
-  });
-  return formattedDistro;
+  }, null);
+  if (formattedDistro instanceof Error) {
+    // Catching parsing version error
+    throw formattedDistro;
+  } else return formattedDistro;
 }
 
 function parseDistro(opts) {
