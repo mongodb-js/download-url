@@ -130,7 +130,6 @@ function parseFileExtension(opts) {
 // Red Hat Enterprise Linux Server release 7.2 (Maipo)
 function parseRhel(data) {
   if (data.match('7.1')) return 'rhel71';
-  if (data.match('7.2')) return 'rhel72';
   if (data.match('6.0')) return 'rhel60';
   return new Error('Could not determine RHEL version');
 }
@@ -185,7 +184,7 @@ function parseDistro(opts) {
   if (!opts.distro) {
     if (opts.platform === 'linux') {
       opts.distro = 'linux_' + opts.bits;
-      if (opts.evergreen) opts.distro += '-' + getLinuxDistro(opts);
+      if (opts.evergreen) opts.distro = getLinuxDistro(opts);
     } else if (opts.platform === 'osx') {
       opts.distro = '';
     } else if (opts.enterprise) {
