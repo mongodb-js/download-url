@@ -20,38 +20,53 @@ function resolveEvergreenBuildArtifact(opts, fn) {
   }
 
   var projectName = format('mongodb-mongo-%s', opts.branch);
-  var url = format('%s/rest/v1/projects/%s/revisions/%s',
-    EVERGREEN_ENDPOINT, projectName, opts.version);
+  var url = format(
+    '%s/rest/v1/projects/%s/revisions/%s',
+    EVERGREEN_ENDPOINT,
+    projectName,
+    opts.version
+  );
 
   debug('resolving git commit sha1 via evergreen `%s`', url);
-  request.get({
-    url: url,
-    json: true
-  }, function(err, res, body) {
-    if (err) {
-      return fn(err);
+  request.get(
+    {
+      url: url,
+      json: true
+    },
+    function(err, res, body) {
+      if (err) {
+        return fn(err);
+      }
+
+      if (res.statusCode === 404) {
+        return fn(new Error(body.message));
+      }
+
+      var dl = format(
+        'https://s3.amazonaws.com/mciuploads/%s/%s/%s/binaries',
+        projectName,
+        opts.distro,
+        opts.version
+      );
+      var artifactPrefix = format(
+        'mongodb_mongo_%s_%s',
+        opts.branch,
+        opts.distro
+      );
+      var basename = body.builds.filter(function(b) {
+        return b.indexOf(artifactPrefix) > -1;
+      })[0];
+
+      // @todo: test across all distros as I believe this may be different for some.
+      basename = 'binaries-' + basename;
+      fn(null, {
+        name: 'mongodb',
+        version: opts.version,
+        artifact: basename + opts.ext,
+        url: dl + '/' + basename + opts.ext
+      });
     }
-
-    if (res.statusCode === 404) {
-      return fn(new Error(body.message));
-    }
-
-    var dl = format('https://s3.amazonaws.com/mciuploads/%s/%s/%s/binaries',
-      projectName, opts.distro, opts.version);
-    var artifactPrefix = format('mongodb_mongo_%s_%s', opts.branch, opts.distro);
-    var basename = body.builds.filter(function(b) {
-      return b.indexOf(artifactPrefix) > -1;
-    })[0];
-
-    // @todo: test across all distros as I believe this may be different for some.
-    basename = 'binaries-' + basename;
-    fn(null, {
-      name: 'mongodb',
-      version: opts.version,
-      artifact: basename + opts.ext,
-      url: dl + '/' + basename + opts.ext
-    });
-  });
+  );
 }
 
 function search(query, fn) {
@@ -69,7 +84,13 @@ function search(query, fn) {
       }
     }
     if (!found) {
-      fn(new Error('Could not find a MongoDB version matching `' + JSON.stringify(query) + '`'));
+      fn(
+        new Error(
+          'Could not find a MongoDB version matching `' +
+            JSON.stringify(query) +
+            '`'
+        )
+      );
     }
   });
 }
@@ -89,13 +110,19 @@ function stable(fn) {
       return fn(err);
     }
 
-    fn(null, res.map(function(v) {
-      return semver.parse(v);
-    }).filter(function(v) {
-      return v.prerelease.length === 0 && v.minor % 2 === 0;
-    }).map(function(v) {
-      return v.version;
-    })[0]);
+    fn(
+      null,
+      res
+        .map(function(v) {
+          return semver.parse(v);
+        })
+        .filter(function(v) {
+          return v.prerelease.length === 0 && v.minor % 2 === 0;
+        })
+        .map(function(v) {
+          return v.version;
+        })[0]
+    );
   });
 }
 
@@ -168,6 +195,8 @@ function resolve(opts, fn) {
     return resolveEvergreenBuildArtifact(opts, fn);
   }
 
+  opts.filenamePlatform = opts.platform;
+
   var handler = versions;
   if (opts.version === 'latest' || opts.version === 'unstable') {
     handler = latest;
@@ -185,8 +214,13 @@ function resolve(opts, fn) {
     // For osx, force ssl on versions >=3.2
     // TODO: Lets find a more elegant way to try ssl first, and
     // then resort to non-ssl if it does not exist
-    if (opts.platform === 'osx' && semver.gte(versionId, '3.2.0')) {
+    if (opts.platform === 'osx' && semver.gte(versionId, '3.2.0') && semver.lte(versionId, '3.6.0')) {
       opts.ssl = true;
+    }
+
+    // SEE: https://github.com/mongodb-js/version-manager/issues/146
+    if (opts.platform === 'osx' && semver.gte(versionId, '3.6.0')) {
+      opts.filenamePlatform = 'macos';
     }
 
     var extraDash = '-';
@@ -199,7 +233,8 @@ function resolve(opts, fn) {
 
     if (opts.enterprise) {
       hostname = 'downloads.mongodb.com';
-      artifact = format('mongodb-%s-%s-enterprise-%s',
+      artifact = format(
+        'mongodb-%s-%s-enterprise-%s',
         opts.platform,
         opts.arch,
         [
@@ -208,20 +243,28 @@ function resolve(opts, fn) {
           opts.debug ? '-debugsymbols-' : '',
           versionId,
           opts.ext
-        ].join(''));
+        ].join('')
+      );
     } else if (opts.platform === 'linux') {
-      artifact = format('mongodb-%s-%s-%s',
+      artifact = format(
+        'mongodb-%s-%s-%s',
         opts.platform,
         opts.arch,
-        [
-          opts.debug ? '-debugsymbols-' : '',
-          versionId,
-          opts.ext
-        ].join(''));
+        [opts.debug ? '-debugsymbols-' : '', versionId, opts.ext].join('')
+      );
     } else {
-      artifact = 'mongodb-' + opts.platform + '-' + (opts.ssl ? 'ssl-' : '') +
-        opts.arch + '-' + opts.distro + extraDash + (opts.debug ? '-debugsymbols-' : '') +
-        versionId + opts.ext;
+      artifact =
+        'mongodb-' +
+        opts.filenamePlatform +
+        '-' +
+        (opts.ssl ? 'ssl-' : '') +
+        opts.arch +
+        '-' +
+        opts.distro +
+        extraDash +
+        (opts.debug ? '-debugsymbols-' : '') +
+        versionId +
+        opts.ext;
     }
 
     opts.name = 'mongodb';
@@ -259,7 +302,6 @@ function options(opts) {
   parseArch(opts);
   return opts;
 }
-
 
 function getDownloadURL(opts, fn) {
   if (Array.isArray(opts)) {
