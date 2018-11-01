@@ -1,12 +1,9 @@
 {
   "name": "mongodb-download-url",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Lookup download URL's for MongoDB versions.",
   "scripts": {
-    "fmt": "mongodb-js-fmt test/*.js bin/*.js index.js",
-    "check": "mongodb-js-precommit",
-    "test": "mocha",
-    "ci": "npm run check && ./node_modules/istanbul/lib/cli.js cover _mocha -- -R spec ./test/*.test.js"
+    "test": "mocha"
   },
   "bin": {
     "mongodb-download-url": "bin/mongodb-download-url.js"
@@ -30,13 +27,7 @@
     "semver": "^5.0.3"
   },
   "devDependencies": {
-    "coveralls": "^2.11.4",
-    "eslint-config-mongodb-js": "^2.0.0",
-    "istanbul": "^0.4.0",
-    "mocha": "^3.0.2",
-    "mongodb-js-fmt": "^0.0.3",
-    "mongodb-js-precommit": "^0.2.8",
-    "pre-commit": "^1.1.2"
+    "mocha": "^5.2.0"
   },
   "keywords": [
     "mongodb",

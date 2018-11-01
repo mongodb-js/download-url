@@ -214,13 +214,22 @@ function resolve(opts, fn) {
     // For osx, force ssl on versions >=3.2
     // TODO: Lets find a more elegant way to try ssl first, and
     // then resort to non-ssl if it does not exist
-    if (opts.platform === 'osx' && semver.gte(versionId, '3.2.0') && semver.lte(versionId, '3.6.0')) {
+    if (
+      opts.platform === 'osx' &&
+      semver.gte(versionId, '3.2.0') &&
+      semver.lte(versionId, '3.6.8')
+    ) {
       opts.ssl = true;
     }
 
     // SEE: https://github.com/mongodb-js/version-manager/issues/146
-    if (opts.platform === 'osx' && semver.gte(versionId, '3.6.0')) {
+    if (opts.platform === 'osx' && semver.gte(versionId, '3.6.9')) {
       opts.filenamePlatform = 'macos';
+    }
+
+    if (opts.platform === 'osx' && semver.satisfies(versionId, '~4.0.0')) {
+      opts.ssl = true;
+      opts.filenamePlatform = 'osx';
     }
 
     var extraDash = '-';

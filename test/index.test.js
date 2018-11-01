@@ -165,14 +165,42 @@ describe('mongodb-download-url', function() {
       );
     });
 
-    it('should resolve 4.1.3', function(done) {
+    it('should rersolve 3.6.8', function(done) {
+      var query = {
+        version: '3.6.8',
+        platform: 'osx',
+        bits: 64
+      };
+      https: verify(
+        done,
+        query,
+        'https://fastdl.mongodb.org/osx/mongodb-osx-ssl-x86_64-3.6.8.tgz'
+      );
+    });
+
+    it('should rersolve 4.0.3', function(done) {
+      var query = {
+        version: '4.0.3',
+        platform: 'osx',
+        bits: 64
+      };
+      https: verify(
+        done,
+        query,
+        'https://fastdl.mongodb.org/osx/mongodb-osx-ssl-x86_64-4.0.3.tgz'
+      );
+    });
+
+    //fastdl.mongodb.org/osx/mongodb-osx-ssl-x86_64-4.0.3.tgz
+
+    https: it('should resolve 4.1.3', function(done) {
       var query = {
         version: '4.1.3',
         platform: 'osx',
         bits: 64
       };
-
-      verify(
+      //fastdl.mongodb.org/osx/mongodb-macos-x86_64-3.6.8.tgz
+      https: verify(
         done,
         query,
         'https://fastdl.mongodb.org/osx/mongodb-macos-x86_64-4.1.3.tgz'
