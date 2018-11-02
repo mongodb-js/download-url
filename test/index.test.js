@@ -25,6 +25,7 @@ function verify(done, query, expectedURL) {
 }
 
 describe('mongodb-download-url', function() {
+  this.timeout(2000);
   // - https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-2.4.14.tgz
   // + https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-linux_64-2.4.14.tgz
   describe('linux', function() {
