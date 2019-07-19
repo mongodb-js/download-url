@@ -255,12 +255,23 @@ function resolve(opts, fn) {
         ].join('')
       );
     } else if (opts.platform === 'linux') {
-      artifact = format(
-        'mongodb-%s-%s-%s',
-        opts.platform,
-        opts.arch,
-        [opts.debug ? '-debugsymbols-' : '', versionId, opts.ext].join('')
-      );
+      var distro = require('./linuxDistro').getDistro();
+      if (distro && opts.bits === '64' && semver.gte(versionId, '4.0.0')) {
+        artifact = format(
+          'mongodb-%s-%s-%s-%s',
+          opts.platform,
+          opts.arch,
+          distro,
+          [opts.debug ? '-debugsymbols-' : '', versionId, opts.ext].join('')
+        )
+      } else {
+        artifact = format(
+          'mongodb-%s-%s-%s',
+          opts.platform,
+          opts.arch,
+          [opts.debug ? '-debugsymbols-' : '', versionId, opts.ext].join('')
+        );
+      }
     } else {
       artifact =
         'mongodb-' +
