@@ -1,6 +1,8 @@
 var resolve = require('../');
 var request = require('request');
 var assert = require('assert');
+var sinon = require('sinon');
+var linuxDistro = require('../linuxDistro');
 
 function verify(done, query, expectedURL) {
   resolve(query, function(err, res) {
@@ -95,6 +97,59 @@ describe('mongodb-download-url', function() {
         query,
         'https://fastdl.mongodb.org/linux/mongodb-linux-i686-3.0.7.tgz'
       );
+    });
+
+    describe('ubuntu', function() {
+      before(function() {
+        this.sinon = sinon.createSandbox();
+        this.sinon.stub(linuxDistro, 'lsbReleaseInfo').returns({
+          distroId: 'Ubuntu',
+          distroVersion: '16.04'
+        });
+      });
+      after(function() {
+        this.sinon.restore();
+      });
+
+      it('should resolve 4.2.0-rc1 with ubuntu-specific url', function (done) {
+        var query = {
+          version: '4.2.0-rc1',
+          platform: 'linux'
+        };
+
+        verify(
+          done,
+          query,
+          'https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-ubuntu1604-4.2.0-rc1.tgz'
+        );
+      });
+
+      it('should resolve 4.0.0 with ubuntu-specific url', function (done) {
+        var query = {
+          version: '4.0.0',
+          platform: 'linux'
+        };
+
+        verify(
+          done,
+          query,
+          'https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-ubuntu1604-4.0.0.tgz'
+        );
+      });
+
+
+      it('should resolve 3.6.0 with generic linux url url', function (done) {
+        var query = {
+          version: '3.6.0',
+          platform: 'linux'
+        };
+
+        verify(
+          done,
+          query,
+          'https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-3.6.0.tgz'
+        );
+      });
     });
   });
 
