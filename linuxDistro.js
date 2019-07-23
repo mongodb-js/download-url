@@ -6,7 +6,7 @@ exports.lsbReleaseInfo = lsbReleaseInfo;
 exports.getDistro = getDistro;
 
 function getDistro() {
-    var distroInfo = lsbReleaseInfo();
+    var distroInfo = exports.lsbReleaseInfo();
     switch (distroInfo.distroId) {
         case 'Ubuntu':
             var version = distroInfo.distroVersion.replace('.', '') || '1604';
