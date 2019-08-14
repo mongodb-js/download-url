@@ -32,7 +32,7 @@ Options:
 Apache 2.0
 
 [travis_img]: https://secure.travis-ci.org/mongodb-js/mongodb-download-url.svg?branch=master
-[travis_url]: https://travis-ci.org/mongodb-js/mongodb-download-url
+[travis_url]: https://travis-ci.org/mongodb-js/download-url
 [npm_img]: https://img.shields.io/npm/v/mongodb-download-url.svg
 [npm_url]: https://www.npmjs.org/package/mongodb-download-url
 [coverage_img]: https://coveralls.io/repos/mongodb-js/mongodb-download-url/badge.svg?branch=master
