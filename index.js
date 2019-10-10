@@ -11,6 +11,13 @@ var debug = require('debug')('mongodb-download-url');
 
 var EVERGREEN_ENDPOINT = 'http://mci-motu.10gen.cc:9090';
 
+/* Architectural condition has been put for arm64.
+At https://www.mongodb.com/download-center/community, only arm64-ubuntu1604 MongoDB server is present to download for arm64 platform. 
+*/
+if (os.arch() == 'arm64'){
+   ARCH = 'arm64-ubuntu1604';
+}
+
 function resolveEvergreenBuildArtifact(opts, fn) {
   if (opts.platform === 'win32') {
     opts.distro = 'windows_64_2k8';
@@ -179,10 +186,11 @@ function parseArch(opts) {
     opts.arch = 'i686';
   } else if (opts.bits === '32' && opts.platform === 'win32') {
     opts.arch = 'i386';
+  } else if (opts.bits === '64' && opts.platform === 'linux' && ARCH === 'arm64-ubuntu1604') {
+    opts.arch = 'arm64-ubuntu1604';
   } else {
     opts.arch = 'x86_64';
   }
-
   return opts;
 }
 
