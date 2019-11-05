@@ -10,6 +10,7 @@ var format = require('util').format;
 var debug = require('debug')('mongodb-download-url');
 
 var EVERGREEN_ENDPOINT = 'http://mci-motu.10gen.cc:9090';
+var LATEST = /^(4.2|stable)/g;
 
 /* Architectural condition has been put for arm64.
 At https://www.mongodb.com/download-center/community, only arm64-ubuntu1604 MongoDB server is present to download for arm64 platform. 
@@ -171,7 +172,7 @@ function parseDistro(opts) {
       opts.distro = '2008plus';
     } else if (opts.platform === 'win32' && opts.bits === '32') {
       opts.distro = '';
-    } else if (opts.platform === 'win32' && opts.bits === '64' && opts.version.match(/^4.2/g)) {
+    } else if (opts.platform === 'win32' && opts.bits === '64' && opts.version.match(LATEST)) {
       // 4.2.x uses 2012plus
       opts.distro = '2012plus';
     } else {
