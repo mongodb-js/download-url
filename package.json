@@ -1,6 +1,6 @@
 {
   "name": "mongodb-download-url",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "Lookup download URL's for MongoDB versions.",
   "scripts": {
     "test": "mocha"
