@@ -204,6 +204,18 @@ describe('mongodb-download-url', function() {
         'https://fastdl.mongodb.org/win32/mongodb-win32-i386-3.0.7.zip'
       );
     });
+    it('should resolve 4.2.1 (32-bit)', function(done) {
+      var query = {
+        version: '4.2.1',
+        platform: 'win32',
+        bits: 64
+      };
+      verify(
+        done,
+        query,
+        'https://fastdl.mongodb.org/win32/mongodb-win32-x86_64-2012plus-4.2.1.zip'
+      );
+    });
   });
 
   describe('osx', function() {

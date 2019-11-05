@@ -171,6 +171,9 @@ function parseDistro(opts) {
       opts.distro = '2008plus';
     } else if (opts.platform === 'win32' && opts.bits === '32') {
       opts.distro = '';
+    } else if (opts.platform === 'win32' && opts.bits === '64' && opts.version.match(/^4.2/g)) {
+      // 4.2.x uses 2012plus
+      opts.distro = '2012plus';
     } else {
       opts.distro = '2008plus-ssl';
     }
