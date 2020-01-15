@@ -1,12 +1,13 @@
 sudo: false
+dist: trusty
 language: node_js
 node_js:
-  - 10.2.1
-  - 8
+  - 12.4.0
 before_install:
-  - npm i -g npm
+  - npm install -g npm@latest
+install:
+  - npm ci
 script:
+  - npm run check
   - npm test
-cache:
-  directories:
-    - '$HOME/.npm'
+cache: npm
