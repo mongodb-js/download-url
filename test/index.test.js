@@ -225,7 +225,7 @@ describe('mongodb-download-url', function() {
       verify(
         done,
         query,
-        'https://fastdl.mongodb.org/win32/mongodb-win32-x86_64-2012plus-4.2.1.zip'
+        'https://fastdl.mongodb.org/win32/mongodb-win32-x86_64-2012plus-4.2.2.zip'
       );
     });
   });
