@@ -17,8 +17,25 @@ function getDistro() {
 }
 
 function lsbReleaseInfo() {
-    var distroId = exec('lsb_release -si', {encoding: 'utf8' });
-    var distroVersion = exec('lsb_release -sr', { encoding: 'utf8' });
+    var distroId = '';
+    var distroVersion = '';
+    try {
+        distroId = exec('lsb_release -si', {encoding: 'utf8' });
+        distroVersion = exec('lsb_release -sr', { encoding: 'utf8' });
+    } catch (e) {
+        if (e.stderr) {
+            try {
+            var issue = exec('cat /etc/issue', {encoding: 'utf8' }).trim();
+            distroVersion = issue.match(/(\d+\.?)+/)[0];
+            distroId = issue.split('GNC/Linux')[0];
+            } catch (e) {
+                console.error('Could not determine Linux distribution');
+                throw e;
+            }
+        } else {
+            throw e;
+        }
+    }
 
     var ret = {
         distroId: distroId.trim(),
