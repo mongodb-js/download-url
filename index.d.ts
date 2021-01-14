@@ -7,6 +7,7 @@ type Options = {
   debug?: boolean;
   distro?: string;
   ext?: string;
+  enterprise?: boolean;
 };
 
 type VersionInfo = Required<Options> & {
