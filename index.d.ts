@@ -16,5 +16,5 @@ type VersionInfo = Required<Options> & {
   name: string;
 };
 
-declare function getDownloadURL(options: Options, callback: (err: Error | null, info: VersionInfo) => void);
+declare function getDownloadURL(options: Options, callback: (err: Error | null, info: VersionInfo) => void): void;
 export = getDownloadURL;
