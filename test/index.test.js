@@ -151,6 +151,45 @@ describe('mongodb-download-url', function() {
         );
       });
     });
+
+    describe('ubuntu 20.04', function() {
+      before(function() {
+        this.sinon = sinon.createSandbox();
+        this.sinon.stub(linuxDistro, 'lsbReleaseInfo').returns({
+          distroId: 'Ubuntu',
+          distroVersion: '20.04'
+        });
+      });
+      after(function() {
+        this.sinon.restore();
+      });
+
+      it('should resolve 4.4.4 with ubuntu-specific url', function (done) {
+        var query = {
+          version: '4.4.4',
+          platform: 'linux'
+        };
+
+        verify(
+          done,
+          query,
+          'https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-ubuntu2004-4.4.4.tgz'
+        );
+      });
+
+      it('should resolve 4.2.3 with ubuntu-specific url', function (done) {
+        var query = {
+          version: '4.2.3',
+          platform: 'linux'
+        };
+
+        verify(
+          done,
+          query,
+          'https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-ubuntu1804-4.2.3.tgz'
+        );
+      });
+    });
   });
 
   describe('windows', function() {
@@ -225,7 +264,7 @@ describe('mongodb-download-url', function() {
       verify(
         done,
         query,
-        'https://fastdl.mongodb.org/win32/mongodb-win32-x86_64-2012plus-4.2.2.zip'
+        'https://fastdl.mongodb.org/win32/mongodb-win32-x86_64-2012plus-4.4.4.zip'
       );
     });
   });

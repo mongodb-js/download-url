@@ -13,7 +13,7 @@ var EVERGREEN_ENDPOINT = 'http://mci-motu.10gen.cc:9090';
 var LATEST = /^(4.2|stable)/g;
 
 /* Architectural condition has been put for arm64.
-At https://www.mongodb.com/download-center/community, only arm64-ubuntu1604 MongoDB server is present to download for arm64 platform. 
+At https://www.mongodb.com/download-center/community, only arm64-ubuntu1604 MongoDB server is present to download for arm64 platform.
 */
 if (os.arch() == 'arm64'){
    ARCH = 'arm64-ubuntu1604';
@@ -269,6 +269,9 @@ function resolve(opts, fn) {
     } else if (opts.platform === 'linux') {
       var distro = require('./linuxDistro').getDistro();
       if (distro && opts.bits === '64' && semver.gte(versionId, '4.0.0')) {
+        if (distro === 'ubuntu2004' && semver.lt(versionId, '4.4.0')) {
+          distro = 'ubuntu1804';
+        }
         artifact = format(
           'mongodb-%s-%s-%s-%s',
           opts.platform,
