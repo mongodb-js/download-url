@@ -12,7 +12,7 @@ function getDistro() {
             var version = distroInfo.distroVersion.replace('.', '') || '1604';
             return 'ubuntu' + version;
         default:
-            return '';
+            return distroInfo.distroId.toLowerCase() + distroInfo.distroVersion.replace('.','');
     }
 }
 
