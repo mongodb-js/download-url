@@ -190,6 +190,123 @@ describe('mongodb-download-url', function() {
         );
       });
     });
+
+    describe('debian 9.2', function() {
+      before(function() {
+        this.sinon = sinon.createSandbox();
+        this.sinon.stub(linuxDistro, 'lsbReleaseInfo').returns({
+          distroId: 'Debian',
+          distroVersion: '9.2'
+        });
+      });
+      after(function() {
+        this.sinon.restore();
+      });
+
+      it('should resolve 4.4.4 with debian-specific url', function (done) {
+        var query = {
+          version: '4.4.4',
+          platform: 'linux'
+        };
+
+        verify(
+          done,
+          query,
+          'https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-debian92-4.4.4.tgz'
+        );
+      });
+
+      it('should resolve 4.0.0 with debian-specific url', function (done) {
+        var query = {
+          version: '4.0.0',
+          platform: 'linux'
+        };
+
+        verify(
+          done,
+          query,
+          'https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-debian92-4.0.0.tgz'
+        );
+      });
+
+      it('should resolve 3.6.0 with generic linux url', function (done) {
+        var query = {
+          version: '3.6.0',
+          platform: 'linux'
+        };
+
+        verify(
+          done,
+          query,
+          'https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-3.6.0.tgz'
+        );
+      });
+    });
+
+    describe('debian 10', function() {
+      before(function() {
+        this.sinon = sinon.createSandbox();
+        this.sinon.stub(linuxDistro, 'lsbReleaseInfo').returns({
+          distroId: 'Debian',
+          distroVersion: '10'
+        });
+      });
+      after(function() {
+        this.sinon.restore();
+      });
+
+      it('should resolve 4.4.4 with debian-specific url', function (done) {
+        var query = {
+          version: '4.4.4',
+          platform: 'linux'
+        };
+
+        verify(
+          done,
+          query,
+          'https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-debian10-4.4.4.tgz'
+        );
+      });
+
+      it('should resolve 4.2.1 with debian-specific url', function (done) {
+        var query = {
+          version: '4.2.1',
+          platform: 'linux'
+        };
+
+        verify(
+          done,
+          query,
+          'https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-debian10-4.2.1.tgz'
+        );
+      });
+
+      it('should resolve 4.1.1 with generic linux url', function (done) {
+        var query = {
+          version: '4.1.1',
+          platform: 'linux'
+        };
+
+        verify(
+          done,
+          query,
+          'https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-4.1.1.tgz'
+        );
+      });
+
+      it('should resolve 3.6.0 with generic linux url url', function (done) {
+        var query = {
+          version: '3.6.0',
+          platform: 'linux'
+        };
+
+        verify(
+          done,
+          query,
+          'https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-3.6.0.tgz'
+        );
+      });
+    });
   });
 
   describe('windows', function() {
