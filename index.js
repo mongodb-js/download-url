@@ -268,7 +268,8 @@ function resolve(opts, fn) {
       );
     } else if (opts.platform === 'linux') {
       var distro = require('./linuxDistro').getDistro();
-      if (distro && opts.bits === '64' && semver.gte(versionId, '4.0.0')) {
+      var distroSpecific = semver.gte(versionId, distro == 'debian10' ? '4.2.0' : '4.0.0');
+      if (distro && opts.bits === '64' && distroSpecific) {
         if (distro === 'ubuntu2004' && semver.lt(versionId, '4.4.0')) {
           distro = 'ubuntu1804';
         }
