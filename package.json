@@ -1,10 +1,20 @@
 {
   "name": "mongodb-download-url",
   "version": "0.6.5",
-  "description": "Lookup download URL's for MongoDB versions.",
+  "description": "Lookup download URLs for MongoDB versions.",
   "scripts": {
-    "test": "mocha"
+    "lint": "eslint src/**/*.ts test/**/*.ts",
+    "test": "npm run lint && npm run build && nyc -r text -r html mocha --colors -r ts-node/register test/*.ts",
+    "build": "npm run compile-ts && gen-esm-wrapper . ./.esm-wrapper.mjs",
+    "prepare": "npm run build",
+    "compile-ts": "tsc -p tsconfig.json"
   },
+  "main": "lib/index.js",
+  "exports": {
+    "require": "./lib/index.js",
+    "import": "./.esm-wrapper.mjs"
+  },
+  "typings": "lib/index.d.ts",
   "bin": {
     "mongodb-download-url": "bin/mongodb-download-url.js"
   },
@@ -18,17 +28,29 @@
     "test"
   ],
   "dependencies": {
-    "async": "^3.1.0",
     "debug": "^4.1.1",
-    "lodash.defaults": "^4.0.0",
+    "JSONStream": "^1.3.5",
     "minimist": "^1.2.0",
     "mongodb-version-list": "^1.0.0",
-    "request": "^2.65.0",
+    "node-fetch": "^2.6.1",
     "semver": "^7.1.1"
   },
   "devDependencies": {
+    "@types/mocha": "^8.2.1",
+    "@types/node": "^14.14.34",
+    "@typescript-eslint/eslint-plugin": "^4.18.0",
+    "@typescript-eslint/parser": "^4.18.0",
+    "eslint": "^7.22.0",
+    "eslint-config-semistandard": "^15.0.1",
+    "eslint-config-standard": "^16.0.2",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.3.1",
+    "gen-esm-wrapper": "^1.1.1",
     "mocha": "^7.0.0",
-    "sinon": "^9.0.0"
+    "nyc": "^15.1.0",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.2.3"
   },
   "keywords": [
     "mongodb",
