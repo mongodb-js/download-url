@@ -99,6 +99,9 @@ function parseArch(arch: string): string[] {
   if (['arm64', 'aarch64'].includes(arch)) {
     return ['arm64', 'aarch64'];
   }
+  if (['ppc64', 'ppc64le'].includes(arch)) {
+    return ['ppc64', 'ppc64le'];
+  }
   return [arch];
 }
 

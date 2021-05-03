@@ -329,6 +329,21 @@ describe('mongodb-download-url', function() {
         await verify(query, 'https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-2.6.11.tgz');
       });
     });
+
+    describe('rhel 7.1 ppc', function() {
+      withFakeDistro('rhel71');
+
+      it('should resolve 4.4.5 with rhel-specific url', async function() {
+        const query = {
+          version: '4.4.5',
+          platform: 'linux',
+          arch: 'ppc64',
+          enterprise: true
+        };
+
+        await verify(query, 'https://downloads.mongodb.com/linux/mongodb-linux-ppc64le-enterprise-rhel71-4.4.5.tgz');
+      });
+    });
   });
 
   describe('windows', function() {
@@ -379,7 +394,7 @@ describe('mongodb-download-url', function() {
         platform: 'win32',
         bits: 64
       } as const;
-      await verify(query, 'https://fastdl.mongodb.org/windows/mongodb-windows-x86_64-4.4.4.zip');
+      await verify(query, 'https://fastdl.mongodb.org/windows/mongodb-windows-x86_64-4.4.5.zip');
     });
   });
 

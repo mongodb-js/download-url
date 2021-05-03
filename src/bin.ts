@@ -15,7 +15,7 @@ if (args.help || args.h) {
   console.error(usage);
   process.exitCode = 1;
 } else {
-  getURL(args)
+  getURL(args as any)
     .then(pkg => console.log(pkg.url))
     .catch(err => { process.nextTick(() => { throw err; }); });
 }
