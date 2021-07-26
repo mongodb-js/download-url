@@ -110,6 +110,14 @@ async function parseTarget(distro: string | undefined, platform: string, archs: 
     const results: PriorityValue<string>[] = [];
     if (distro) {
       results.push({ value: distro, priority: 1000 });
+
+      if (archs.includes('x86_64')) {
+        if (distro === 'amzn64') {
+          results.push({ value: 'amazon', priority: 900 });
+        } else if (distro === 'amazon') {
+          results.push({ value: 'amzn64', priority: 900 });
+        }
+      }
     }
 
     if (archs.includes('x86_64')) {
