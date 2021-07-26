@@ -1,6 +1,6 @@
 {
   "name": "mongodb-download-url",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Lookup download URLs for MongoDB versions.",
   "scripts": {
     "lint": "eslint src/**/*.ts test/**/*.ts",
