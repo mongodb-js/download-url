@@ -79,9 +79,10 @@ function listDistroIds({ id, version }: { id: string, version: string }): Priori
     case 'sles':
       return [{ value: 'suse' + version.split('.')[0], priority: 100 }];
     case 'amzn':
+    case 'amzn64':
     case 'amazon':
       if (version.match(/^201[0-9]\./)) {
-        return [{ value: 'amazon', priority: 100 }];
+        return [{ value: 'amazon', priority: 100 }, { value: 'amzn64', priority: 100 }];
       } else {
         return [{ value: 'amazon' + version.replace('.', ''), priority: 100 }];
       }

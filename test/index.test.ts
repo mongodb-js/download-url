@@ -394,7 +394,7 @@ describe('mongodb-download-url', function() {
         platform: 'win32',
         bits: 64
       } as const;
-      await verify(query, 'https://fastdl.mongodb.org/windows/mongodb-windows-x86_64-4.4.5.zip');
+      await verify(query, kUnknownUrl);
     });
   });
 
