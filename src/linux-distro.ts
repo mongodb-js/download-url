@@ -23,6 +23,8 @@ export async function getCurrentLinuxDistro(): Promise<PriorityValue<string>[]> 
       return listDistroIds({ id: 'suse', version: match[1] });
     } else if (match = distroId.match(/^rhel(\d+)$/)) {
       return listDistroIds({ id: 'redhatenterprise', version: match[1] });
+    } else if (['amazon', 'amzn64', 'amazon1'].includes(distroId)) {
+      return listDistroIds({ id: 'amazon', version: '2018.03' });
     }
     return [{ value: distroId, priority: 100 }];
   }
