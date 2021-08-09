@@ -74,6 +74,18 @@ describe('mongodb-download-url', function() {
       await verify(query, 'https://downloads.mongodb.com/linux/mongodb-linux-x86_64-enterprise-ubuntu1404-3.1.9.tgz');
     });
 
+    it('should resolve 5.0.2 enterprise cryptd-only', async function() {
+      const query = {
+        version: '5.0.2',
+        platform: 'linux',
+        distro: 'ubuntu2004',
+        enterprise: true,
+        cryptd: true,
+        bits: 64
+      } as const;
+      await verify(query, 'https://downloads.mongodb.com/linux/mongodb-cryptd-linux-x86_64-enterprise-ubuntu2004-5.0.2.tgz');
+    });
+
     it('should resolve 3.0.7 (32-bit)', async function() {
       const query = {
         version: '3.0.7',

@@ -35,6 +35,11 @@ type ArtifactOptions = {
    */
   enterprise?: boolean;
   /**
+   * If true, this will return the mongocryptd-only package, if available.
+   * (This typically only makes sense with { enterprise: true }.)
+   */
+  cryptd?: boolean;
+  /**
    * @deprecated Use arch instead.
    */
   bits?: '32' | '64' | 32 | 64
@@ -65,6 +70,7 @@ type ProcessedOptions = {
   arch: string[];
   target: PriorityValue<string>[];
   enterprise: boolean;
+  cryptd: boolean;
 };
 
 function getPriority<T>(values: PriorityValue<T>[], candidate: T): number {
@@ -232,22 +238,23 @@ async function resolve(opts: ProcessedOptions): Promise<DownloadArtifactInfo> {
   }
 
   debug('fully resolved', JSON.stringify(opts, null, 2), download);
+  const { url } = (opts.cryptd ? download.cryptd : null) ?? download.archive;
 
   return {
     ...opts,
     name: 'mongodb',
-    url: download.archive.url,
+    url: url,
     arch: download.arch,
     distro: download.target,
     platform: download.target,
     filenamePlatform: download.target,
     version: version?.version ?? '*',
-    artifact: path.basename(download.archive.url),
+    artifact: path.basename(url),
     debug: false,
     enterprise: download.edition === 'enterprise',
     branch: 'master',
     bits: ['i386', 'i686'].includes(download.arch) ? '32' : '64',
-    ext: download.archive.url.match(/\.([^.]+)$/)?.[1] ?? 'tgz'
+    ext: url.match(/\.([^.]+)$/)?.[1] ?? 'tgz'
   };
 }
 
@@ -286,6 +293,7 @@ async function options(opts: Options | string = {}): Promise<ProcessedOptions & 
     arch: parseArch(opts.arch),
     target: [],
     enterprise: !!opts.enterprise,
+    cryptd: !!opts.cryptd,
     version: opts.version as string
   };
   processedOptions.target = await parseTarget(
