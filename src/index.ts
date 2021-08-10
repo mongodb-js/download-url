@@ -238,7 +238,9 @@ async function resolve(opts: ProcessedOptions): Promise<DownloadArtifactInfo> {
   }
 
   debug('fully resolved', JSON.stringify(opts, null, 2), download);
-  const { url } = (opts.cryptd ? download.cryptd : null) ?? download.archive;
+  // cryptd package on Windows is buggy: https://jira.mongodb.org/browse/BUILD-13653
+  const wantsCryptd = opts.cryptd && download.target && !download.target.startsWith('windows');
+  const { url } = (wantsCryptd ? download.cryptd : null) ?? download.archive;
 
   return {
     ...opts,

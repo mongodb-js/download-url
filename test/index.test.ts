@@ -74,7 +74,7 @@ describe('mongodb-download-url', function() {
       await verify(query, 'https://downloads.mongodb.com/linux/mongodb-linux-x86_64-enterprise-ubuntu1404-3.1.9.tgz');
     });
 
-    it('should resolve 5.0.2 enterprise cryptd-only', async function() {
+    it('should resolve 5.0.2 enterprise cryptd-only on Linux', async function() {
       const query = {
         version: '5.0.2',
         platform: 'linux',
@@ -84,6 +84,18 @@ describe('mongodb-download-url', function() {
         bits: 64
       } as const;
       await verify(query, 'https://downloads.mongodb.com/linux/mongodb-cryptd-linux-x86_64-enterprise-ubuntu2004-5.0.2.tgz');
+    });
+
+    it('should resolve 5.0.2 enterprise cryptd-only on Windows', async function() {
+      const query = {
+        version: '5.0.2',
+        platform: 'windows',
+        distro: 'windows',
+        enterprise: true,
+        cryptd: true,
+        bits: 64
+      } as const;
+      await verify(query, 'https://downloads.mongodb.com/windows/mongodb-windows-x86_64-enterprise-5.0.2.zip');
     });
 
     it('should resolve 3.0.7 (32-bit)', async function() {
