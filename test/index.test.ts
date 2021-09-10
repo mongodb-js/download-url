@@ -95,7 +95,7 @@ describe('mongodb-download-url', function() {
         cryptd: true,
         bits: 64
       } as const;
-      await verify(query, 'https://downloads.mongodb.com/windows/mongodb-windows-x86_64-enterprise-5.0.2.zip');
+      await verify(query, 'https://downloads.mongodb.com/windows/mongodb-cryptd-windows-x86_64-enterprise-5.0.2.zip');
     });
 
     it('should resolve 3.0.7 (32-bit)', async function() {
