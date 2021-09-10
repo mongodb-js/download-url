@@ -238,9 +238,12 @@ async function resolve(opts: ProcessedOptions): Promise<DownloadArtifactInfo> {
   }
 
   debug('fully resolved', JSON.stringify(opts, null, 2), download);
-  // cryptd package on Windows is buggy: https://jira.mongodb.org/browse/BUILD-13653
-  const wantsCryptd = opts.cryptd && download.target && !download.target.startsWith('windows');
-  const { url } = (wantsCryptd ? download.cryptd : null) ?? download.archive;
+  const wantsCryptd = opts.cryptd && download.target;
+  let { url } = (wantsCryptd ? download.cryptd : null) ?? download.archive;
+  if (wantsCryptd) {
+    // cryptd package on Windows was buggy: https://jira.mongodb.org/browse/BUILD-13653
+    url = url.replace('mongodb-shell-windows', 'mongodb-cryptd-windows');
+  }
 
   return {
     ...opts,
