@@ -98,6 +98,30 @@ describe('mongodb-download-url', function() {
       await verify(query, 'https://downloads.mongodb.com/windows/mongodb-cryptd-windows-x86_64-enterprise-5.0.2.zip');
     });
 
+    it('should resolve 5.3.0-rc3 enterprise csfle-only on Linux', async function() {
+      const query = {
+        version: '5.3.0-rc3',
+        platform: 'linux',
+        distro: 'ubuntu2004',
+        enterprise: true,
+        csfle: true,
+        bits: 64
+      } as const;
+      await verify(query, 'https://downloads.mongodb.com/linux/mongo_csfle_v1-linux-x86_64-enterprise-ubuntu2004-5.3.0-rc3.tgz');
+    });
+
+    it('should resolve 5.3.0-rc3 enterprise csfle-only on Windows', async function() {
+      const query = {
+        version: '5.3.0-rc3',
+        platform: 'windows',
+        distro: 'windows',
+        enterprise: true,
+        csfle: true,
+        bits: 64
+      } as const;
+      await verify(query, 'https://downloads.mongodb.com/windows/mongo_csfle_v1-windows-x86_64-enterprise-5.3.0-rc3.zip');
+    });
+
     it('should resolve 3.0.7 (32-bit)', async function() {
       const query = {
         version: '3.0.7',

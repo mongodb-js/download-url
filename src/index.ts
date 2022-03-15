@@ -40,6 +40,11 @@ type ArtifactOptions = {
    */
   cryptd?: boolean;
   /**
+   * If true, this will return the csfle-library-only package, if available.
+   * (This typically only makes sense with { enterprise: true }.)
+   */
+  csfle?: boolean;
+  /**
    * @deprecated Use arch instead.
    */
   bits?: '32' | '64' | 32 | 64
@@ -71,6 +76,7 @@ type ProcessedOptions = {
   target: PriorityValue<string>[];
   enterprise: boolean;
   cryptd: boolean;
+  csfle: boolean;
 };
 
 function getPriority<T>(values: PriorityValue<T>[], candidate: T): number {
@@ -237,9 +243,18 @@ async function resolve(opts: ProcessedOptions): Promise<DownloadArtifactInfo> {
     throw new Error(`Could not find download URL for version ${version?.version} ${inspect(opts)}`);
   }
 
-  debug('fully resolved', JSON.stringify(opts, null, 2), download);
   const wantsCryptd = opts.cryptd && download.target;
-  let { url } = (wantsCryptd ? download.cryptd : null) ?? download.archive;
+  const wantsCsfle = opts.csfle && download.target;
+
+  if (wantsCsfle && !download.csfle) {
+    throw new Error(`No CSFLE library download for version ${version?.version} available ${inspect(opts)}`);
+  }
+
+  debug('fully resolved', JSON.stringify(opts, null, 2), download);
+  // mongocryptd is contained in the regular enterprise archive, the csfle lib is not
+  let { url } = wantsCsfle
+    ? download.csfle
+    : ((wantsCryptd ? download.cryptd : null) ?? download.archive);
   if (wantsCryptd) {
     // cryptd package on Windows was buggy: https://jira.mongodb.org/browse/BUILD-13653
     url = url.replace('mongodb-shell-windows', 'mongodb-cryptd-windows');
@@ -272,6 +287,10 @@ async function options(opts: Options | string = {}): Promise<ProcessedOptions & 
     opts = { ...opts };
   }
 
+  if (opts.cryptd && opts.csfle) {
+    throw new Error('Cannot request both cryptd and csfle package');
+  }
+
   if (opts.bits && !opts.arch) {
     opts.arch = +opts.bits === 32 ? 'ia32' : 'x64';
   }
@@ -299,6 +318,7 @@ async function options(opts: Options | string = {}): Promise<ProcessedOptions & 
     target: [],
     enterprise: !!opts.enterprise,
     cryptd: !!opts.cryptd,
+    csfle: !!opts.csfle,
     version: opts.version as string
   };
   processedOptions.target = await parseTarget(
