@@ -93,7 +93,7 @@ function listDistroIds({ id, version }: { id: string, version: string }): Priori
     case 'redhatenterprise':
     case 'redhatenterpriseserver': {
       const want = +version.replace('.', '');
-      const known = [55, 57, 62, 67, 70, 71, 72, 80, 81, 82];
+      const known = [55, 57, 62, 67, 70, 71, 72, 80, 81, 82, 83];
       const allowedVersions = known.filter(v => v <= want);
       return allowedVersions.map((v, i) => ({ value: 'rhel' + v, priority: (i + 1) * 100 }));
     }
