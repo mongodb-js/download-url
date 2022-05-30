@@ -27,6 +27,7 @@ export type DownloadInfo = {
 
   cryptd?: ArchiveBaseInfo;
   csfle?: ArchiveBaseInfo;
+  crypt_shared?: ArchiveBaseInfo;
   shell?: ArchiveBaseInfo;
   packages?: string[];
   msi?: string;

@@ -40,8 +40,12 @@ type ArtifactOptions = {
    */
   cryptd?: boolean;
   /**
-   * If true, this will return the csfle-library-only package, if available.
+   * If true, this will return the mongo_crypt_shared library package, if available.
    * (This typically only makes sense with { enterprise: true }.)
+   */
+  crypt_shared?: boolean;
+  /**
+   * @deprecated Use crypt_shared instead.
    */
   csfle?: boolean;
   /**
@@ -52,7 +56,7 @@ type ArtifactOptions = {
 
 export type Options = ArtifactOptions & VersionListOpts;
 
-export type DownloadArtifactInfo = Required<ArtifactOptions> & {
+export type DownloadArtifactInfo = Required<Omit<ArtifactOptions, 'csfle'>> & {
   /** Full download URL. */
   url: string;
   /** Filename for the given download URL. */
@@ -76,7 +80,7 @@ type ProcessedOptions = {
   target: PriorityValue<string>[];
   enterprise: boolean;
   cryptd: boolean;
-  csfle: boolean;
+  crypt_shared: boolean;
 };
 
 function getPriority<T>(values: PriorityValue<T>[], candidate: T): number {
@@ -244,16 +248,16 @@ async function resolve(opts: ProcessedOptions): Promise<DownloadArtifactInfo> {
   }
 
   const wantsCryptd = opts.cryptd && download.target;
-  const wantsCsfle = opts.csfle && download.target;
+  const wantsCryptShared = opts.crypt_shared && download.target;
 
-  if (wantsCsfle && !download.csfle) {
-    throw new Error(`No CSFLE library download for version ${version?.version} available ${inspect(opts)}`);
+  if (wantsCryptShared && !download.crypt_shared && !download.csfle) {
+    throw new Error(`No crypt_shared library download for version ${version?.version} available ${inspect(opts)}`);
   }
 
   debug('fully resolved', JSON.stringify(opts, null, 2), download);
   // mongocryptd is contained in the regular enterprise archive, the csfle lib is not
-  let { url } = wantsCsfle
-    ? download.csfle
+  let { url } = wantsCryptShared
+    ? (download.crypt_shared ?? download.csfle)
     : ((wantsCryptd ? download.cryptd : null) ?? download.archive);
   if (wantsCryptd) {
     // cryptd package on Windows was buggy: https://jira.mongodb.org/browse/BUILD-13653
@@ -287,7 +291,9 @@ async function options(opts: Options | string = {}): Promise<ProcessedOptions & 
     opts = { ...opts };
   }
 
-  if (opts.cryptd && opts.csfle) {
+  opts.crypt_shared ??= opts.csfle;
+
+  if (opts.cryptd && opts.crypt_shared) {
     throw new Error('Cannot request both cryptd and csfle package');
   }
 
@@ -318,7 +324,7 @@ async function options(opts: Options | string = {}): Promise<ProcessedOptions & 
     target: [],
     enterprise: !!opts.enterprise,
     cryptd: !!opts.cryptd,
-    csfle: !!opts.csfle,
+    crypt_shared: !!opts.crypt_shared,
     version: opts.version as string
   };
   processedOptions.target = await parseTarget(
