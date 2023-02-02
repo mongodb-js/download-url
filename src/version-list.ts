@@ -54,12 +54,20 @@ type FullJSON = {
   versions: VersionInfo[];
 };
 
+export type ReleaseTag =
+  | 'continuous_release'
+  | 'development_release'
+  | 'production_release'
+  | 'release_candidate'
+  | '*';
 export type VersionListOpts = {
   version?: string;
   versionListUrl?: string;
   cachePath?: string;
   cacheTimeMs?: number;
+  // @deprecated use allowedTags instead
   productionOnly?: boolean;
+  allowedTags?: readonly ReleaseTag[];
 };
 
 function defaultCachePath(): string {
@@ -129,8 +137,8 @@ export async function getVersion(opts: VersionListOpts): Promise<VersionInfo> {
   const fullJSON = await getFullJSON(opts);
   let versions = fullJSON.versions;
   versions = versions.filter((info: VersionInfo) => info.downloads.length > 0);
-  if (opts.productionOnly) {
-    versions = versions.filter((info: VersionInfo) => info.production_release);
+  if (opts.allowedTags && !opts.allowedTags.includes('*')) {
+    versions = versions.filter((info: VersionInfo) => opts.allowedTags.some(tag => !!info[tag]));
   }
   if (opts.version && opts.version !== '*') {
     versions = versions.filter((info: VersionInfo) => semver.satisfies(info.version, opts.version));

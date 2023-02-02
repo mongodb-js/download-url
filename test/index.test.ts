@@ -224,6 +224,17 @@ describe('mongodb-download-url', function() {
 
         await verify(query, 'https://fastdl.mongodb.org/linux/mongodb-linux-aarch64-ubuntu2004-4.4.0.tgz');
       });
+
+      it('should resolve 6.2.0 as a continuous release', async function() {
+        const query = {
+          version: '>= 6.1 <= 6.2.0',
+          platform: 'linux',
+          arch: 'arm64',
+          allowedTags: ['production_release', 'continuous_release']
+        } as const;
+
+        await verify(query, 'https://fastdl.mongodb.org/linux/mongodb-linux-aarch64-ubuntu2004-6.2.0.tgz');
+      });
     });
 
     describe('sunos', function() {
@@ -553,6 +564,13 @@ describe('mongodb-download-url', function() {
     it('should resolve `latest`', async function() {
       const query = {
         version: 'latest'
+      };
+      await verify(query, kUnknownUrl);
+    });
+
+    it('should resolve `rapid`', async function() {
+      const query = {
+        version: 'rapid'
       };
       await verify(query, kUnknownUrl);
     });
