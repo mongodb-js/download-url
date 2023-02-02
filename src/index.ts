@@ -309,13 +309,19 @@ async function options(opts: Options | string = {}): Promise<ProcessedOptions & 
   if (!opts.version) {
     opts.version = process.env.MONGODB_VERSION || 'stable';
   }
+  if (opts.productionOnly) {
+    opts.allowedTags = ['production_release'];
+  }
 
   if (opts.version === 'stable' || opts.version === 'latest' || opts.version === '*') {
     opts.version = '*';
-    opts.productionOnly = true;
+    opts.allowedTags ??= ['production_release'];
+  } else if (opts.version === 'rapid' || opts.version === 'continuous') { // a.k.a. quarterly etc.
+    opts.version = '*';
+    opts.allowedTags ??= ['production_release', 'continuous_release'];
   } else if (opts.version === 'unstable') {
     opts.version = '*';
-    opts.productionOnly = false;
+    opts.allowedTags ??= ['*'];
   }
 
   const processedOptions: ProcessedOptions & VersionListOpts = {
