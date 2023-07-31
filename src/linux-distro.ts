@@ -25,6 +25,8 @@ export async function getCurrentLinuxDistro(): Promise<PriorityValue<string>[]> 
       return listDistroIds({ id: 'redhatenterprise', version: match[1] });
     } else if (['amazon', 'amzn64', 'amazon1'].includes(distroId)) {
       return listDistroIds({ id: 'amazon', version: '2018.03' });
+    } else if (match = distroId.match(/^amazon([0-9.]+)$/)) {
+      return listDistroIds({ id: 'amazon', version: match[1] });
     }
     return [{ value: distroId, priority: 100 }];
   }
@@ -67,7 +69,8 @@ function listDistroIds({ id, version }: { id: string, version: string }): Priori
       if (major >= 16) results.push({ value: 'ubuntu1604', priority: 300 });
       if (major >= 18) results.push({ value: 'ubuntu1804', priority: 400 });
       if (major >= 20) results.push({ value: 'ubuntu2004', priority: 500 });
-      if (major > 20) results.push({ value: 'ubuntu' + version.replace('.', ''), priority: 600 });
+      if (major >= 22) results.push({ value: 'ubuntu2204', priority: 600 });
+      if (major > 22) results.push({ value: 'ubuntu' + version.replace('.', '') + '04', priority: 700 });
       return results;
     }
     case 'debian': {
@@ -85,6 +88,8 @@ function listDistroIds({ id, version }: { id: string, version: string }): Priori
     case 'amazon':
       if (version.match(/^201[0-9]\./)) {
         return [{ value: 'amazon', priority: 100 }, { value: 'amzn64', priority: 100 }];
+      } else if (version.match(/^\d\d\d\d\./)) {
+        return [{ value: 'amazon' + version.replace(/\..+$/, ''), priority: 100 }];
       } else {
         return [{ value: 'amazon' + version.replace('.', ''), priority: 100 }];
       }
@@ -93,7 +98,7 @@ function listDistroIds({ id, version }: { id: string, version: string }): Priori
     case 'redhatenterprise':
     case 'redhatenterpriseserver': {
       const want = +version.replace('.', '');
-      const known = [55, 57, 62, 67, 70, 71, 72, 80, 81, 82, 83];
+      const known = [55, 57, 62, 67, 70, 71, 72, 80, 81, 82, 83, 90];
       const allowedVersions = known.filter(v => v <= want);
       return allowedVersions.map((v, i) => ({ value: 'rhel' + v, priority: (i + 1) * 100 }));
     }
