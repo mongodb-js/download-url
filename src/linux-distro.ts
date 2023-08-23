@@ -19,7 +19,7 @@ export async function getCurrentLinuxDistro(): Promise<PriorityValue<string>[]> 
       return listDistroIds({ id: 'debian', version: match[1] });
     } else if (match = distroId.match(/^debian([1-7]\d)$/)) {
       return listDistroIds({ id: 'debian', version: match[1] });
-    } else if (match = distroId.match(/^suse(\d+)$/)) {
+    } else if (match = distroId.match(/^suse(\d+)-?(sp\d+)?$/)) {
       return listDistroIds({ id: 'suse', version: match[1] });
     } else if (match = distroId.match(/^rhel(\d+)$/)) {
       return listDistroIds({ id: 'redhatenterprise', version: match[1] });

@@ -274,6 +274,19 @@ describe('mongodb-download-url', function() {
       });
     });
 
+    describe('suse 15', function() {
+      withFakeDistro('suse15sp4');
+
+      it('should resolve 4.4.0 with suse-specific url', async function() {
+        const query = {
+          version: '4.4.0',
+          platform: 'linux'
+        };
+
+        await verify(query, 'https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-suse15-4.4.0.tgz');
+      });
+    });
+
     describe('RHEL 7.7', function() {
       withFakeDistro('rhel77');
 
