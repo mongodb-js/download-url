@@ -627,7 +627,7 @@ describe('mongodb-download-url', function() {
     });
 
     it('should handle a version string input', async function() {
-      await verify('4.4.2', kUnknownUrl);
+      await verify('7.0.11', kUnknownUrl);
     });
 
     it('should use the MONGODB_VERSION environment variable for version', async function() {
