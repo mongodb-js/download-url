@@ -43,23 +43,24 @@ export async function getCurrentLinuxDistro(): Promise<PriorityValue<string>[]> 
   if (osRelease) {
     const id = osReleaseId = osRelease.match(/^ID="?(.+?)"?$/m)?.[1];
     const version = osRelease.match(/^VERSION_ID="?(.+?)"?$/m)?.[1];
-    if (id && version) {
-      debug('got os-release info', { id, version });
-      const results = listDistroIds({ id, version });
+    const codename = osRelease.match(/^VERSION_CODENAME="?(.+?)"?$/m)?.[1];
+    if (id && (version || codename)) {
+      debug('got os-release info', { id, version, codename });
+      const results = listDistroIds({ id, version, codename });
       if (results.length > 0) {
         return results;
       }
     }
   }
-  const { id, version } = await lsbReleaseInfo();
-  const results = listDistroIds({ id, version });
+  const { id, version, codename } = await lsbReleaseInfo();
+  const results = listDistroIds({ id, version, codename });
   if (results.length > 0) {
     return results;
   }
   throw new Error(`Could not figure out current Linux distro (${id}, ${osReleaseId})`);
 }
 
-function listDistroIds({ id, version }: { id: string, version: string }): PriorityValue<string>[] {
+function listDistroIds({ id, version, codename }: { id: string, version: string, codename?: string }): PriorityValue<string>[] {
   const results: PriorityValue<string>[] = [];
   switch (id.toLowerCase()) {
     case 'ubuntu': {
@@ -78,6 +79,12 @@ function listDistroIds({ id, version }: { id: string, version: string }): Priori
       if (+version >= 9) results.push({ value: 'debian92', priority: 200 });
       if (+version >= 10) results.push({ value: 'debian10', priority: 300 });
       if (+version > 10) results.push({ value: 'debian' + version, priority: 400 });
+      if (!version) {
+        if (codename === 'buster') results.push({ value: 'debian10', priority: 100 });
+        if (codename === 'bullseye') results.push({ value: 'debian11', priority: 200 });
+        if (codename === 'bookworm') results.push({ value: 'debian12', priority: 300 });
+        if (codename === 'trixie') results.push({ value: 'debian13', priority: 400 });
+      }
       return results;
     }
     case 'suse':
@@ -106,18 +113,22 @@ function listDistroIds({ id, version }: { id: string, version: string }): Priori
   return [];
 }
 
-async function lsbReleaseInfo(): Promise<{ id: string, version: string }> {
+async function lsbReleaseInfo(): Promise<{ id: string, version: string, codename: string }> {
   const [
     id,
-    version
+    version,
+    codename
   ] = await Promise.all([
     (async() => {
       return (await execFile('lsb_release', ['-si'], { encoding: 'utf8' })).stdout.trim();
     })(),
     (async() => {
       return (await execFile('lsb_release', ['-sr'], { encoding: 'utf8' })).stdout.trim();
+    })(),
+    (async() => {
+      return (await execFile('lsb_release', ['-sc'], { encoding: 'utf8' })).stdout.trim();
     })()
   ]);
-  debug('got lsb info', { id, version });
-  return { id, version };
+  debug('got lsb info', { id, version, codename });
+  return { id, version, codename };
 }
