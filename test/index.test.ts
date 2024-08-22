@@ -300,6 +300,30 @@ describe('mongodb-download-url', function() {
       });
     });
 
+    describe('RHEL 8.0', function() {
+      withFakeDistro('rhel80');
+
+      it('should resolve 6.0.17 with new schema RHEL-specific url', async function() {
+        const query = {
+          version: '6.0.17',
+          platform: 'linux',
+          bits: 64
+        } as const;
+
+        await verify(query, 'https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-rhel8-6.0.17.tgz');
+      });
+
+      it('should resolve 6.0.16 with old schema RHEL-specific url', async function() {
+        const query = {
+          version: '6.0.16',
+          platform: 'linux',
+          bits: 64
+        } as const;
+
+        await verify(query, 'https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-rhel80-6.0.16.tgz');
+      });
+    });
+
     describe('RHEL 5.5', function() {
       withFakeDistro('rhel55');
 
