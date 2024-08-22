@@ -181,6 +181,11 @@ async function parseTarget(distro: string | undefined, platform: string, archs: 
       { value: 'darwin', priority: 1 },
       { value: 'macos', priority: 1 }
     ];
+  } else if (['rhel80', 'rhel8'].includes(platform)) {
+    return [
+      { value: 'rhel80', priority: 1 },
+      { value: 'rhel8', priority: 2 }
+    ];
   }
   return [{ value: platform, priority: 1 }];
 }

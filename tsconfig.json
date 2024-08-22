@@ -6,8 +6,8 @@
     "strictNullChecks": false,
     "declaration": true,
     "removeComments": true,
-    "target": "es2018",
-    "lib": ["es2018"],
+    "target": "es2019",
+    "lib": ["es2019"],
     "outDir": "./lib",
     "moduleResolution": "node",
     "module": "commonjs"
