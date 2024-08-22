@@ -111,15 +111,14 @@ function listDistroIds({ id, version, codename }: { id: string, version: string,
             { value: 'rhel8', priority: ((i + 1) * 100) + 1 }
           ];
         } else {
-          return [{ value: 'rhel' + v, priority: (i + 1) * 100 }];
+          return { value: 'rhel' + v, priority: (i + 1) * 100 };
         }
       };
 
       const want = +version.replace('.', '');
       const known = [55, 57, 62, 67, 70, 71, 72, 80, 81, 82, 83, 90];
       const allowedVersions = known.filter(v => v <= want);
-      const priorities = allowedVersions.map(toRhelVersions);
-      return flattenArray(priorities);
+      return allowedVersions.flatMap(toRhelVersions);
     }
   }
   return [];
@@ -143,13 +142,4 @@ async function lsbReleaseInfo(): Promise<{ id: string, version: string, codename
   ]);
   debug('got lsb info', { id, version, codename });
   return { id, version, codename };
-}
-
-function flattenArray<T>(arrayOfArrays: T[][]): T[] {
-  const result: T[] = [];
-  for (const inner of arrayOfArrays) {
-    result.push(...inner);
-  }
-
-  return result;
 }

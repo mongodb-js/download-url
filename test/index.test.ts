@@ -131,32 +131,35 @@ describe('mongodb-download-url', function() {
       await verify(query, 'https://fastdl.mongodb.org/linux/mongodb-linux-i686-3.0.7.tgz');
     });
 
-    describe('ubuntu 16.04', function() {
-      withFakeDistro('ubuntu1604');
+    describe('ubuntu 18.04', function() {
+      withFakeDistro('ubuntu1804');
 
       it('should resolve 4.2.0-rc1 with ubuntu-specific url', async function() {
         const query = {
           version: '4.2.0-rc1',
-          platform: 'linux'
-        };
+          platform: 'linux',
+          bits: 64
+        } as const;
 
-        await verify(query, 'https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-ubuntu1604-4.2.0-rc1.tgz');
+        await verify(query, 'https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-ubuntu1804-4.2.0-rc1.tgz');
       });
 
-      it('should resolve 4.0.0 with ubuntu-specific url', async function() {
+      it('should resolve 4.0.0 with ubuntu-specific url and fallback to an older version of ubuntu', async function() {
         const query = {
           version: '4.0.0',
-          platform: 'linux'
-        };
+          platform: 'linux',
+          bits: 64
+        } as const;
 
         await verify(query, 'https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-ubuntu1604-4.0.0.tgz');
       });
 
-      it('should resolve 3.6.0 with ubuntu-specific url', async function() {
+      it('should resolve 3.6.0 with ubuntu-specific url and fallback to an older version of ubuntu', async function() {
         const query = {
           version: '3.6.0',
-          platform: 'linux'
-        };
+          platform: 'linux',
+          bits: 64
+        } as const;
 
         await verify(query, 'https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-ubuntu1604-3.6.0.tgz');
       });
@@ -168,20 +171,6 @@ describe('mongodb-download-url', function() {
           bits: 64
         } as const;
         await verify(query, 'https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-2.6.11.tgz');
-      });
-    });
-
-    describe('ubuntu 18.04', function() {
-      it('should resolve 4.4.0 with ubuntu-specific url for ppc64le', async function() {
-        const query = {
-          version: '4.4.0',
-          platform: 'linux',
-          arch: 'ppc64le',
-          enterprise: true,
-          distro: 'ubuntu1804'
-        };
-
-        await verify(query, 'https://downloads.mongodb.com/linux/mongodb-linux-ppc64le-enterprise-ubuntu1804-4.4.0.tgz');
       });
     });
 
@@ -200,8 +189,9 @@ describe('mongodb-download-url', function() {
       it('should resolve 4.4.4 with ubuntu-specific url', async function() {
         const query = {
           version: '4.4.4',
-          platform: 'linux'
-        };
+          platform: 'linux',
+          bits: 64
+        } as const;
 
         await verify(query, 'https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-ubuntu2004-4.4.4.tgz');
       });
@@ -209,8 +199,9 @@ describe('mongodb-download-url', function() {
       it('should resolve 4.2.3 with ubuntu-specific url', async function() {
         const query = {
           version: '4.2.3',
-          platform: 'linux'
-        };
+          platform: 'linux',
+          bits: 64
+        } as const;
 
         await verify(query, 'https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-ubuntu1804-4.2.3.tgz');
       });
@@ -241,8 +232,9 @@ describe('mongodb-download-url', function() {
       it('should resolve 3.5.8 with sunos-specific url', async function() {
         const query = {
           version: '3.5.8',
-          platform: 'sunos'
-        };
+          platform: 'sunos',
+          bits: 64
+        } as const;
 
         await verify(query, 'https://fastdl.mongodb.org/sunos5/mongodb-sunos5-x86_64-3.5.8.tgz');
       });
@@ -254,8 +246,9 @@ describe('mongodb-download-url', function() {
       it('should resolve 4.4.0 with suse-specific url', async function() {
         const query = {
           version: '4.4.0',
-          platform: 'linux'
-        };
+          platform: 'linux',
+          bits: 64
+        } as const;
 
         await verify(query, 'https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-suse12-4.4.0.tgz');
       });
@@ -267,8 +260,9 @@ describe('mongodb-download-url', function() {
       it('should resolve 4.4.0 with suse-specific url', async function() {
         const query = {
           version: '4.4.0',
-          platform: 'linux'
-        };
+          platform: 'linux',
+          bits: 64
+        } as const;
 
         await verify(query, 'https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-suse15-4.4.0.tgz');
       });
@@ -280,8 +274,9 @@ describe('mongodb-download-url', function() {
       it('should resolve 4.4.0 with suse-specific url', async function() {
         const query = {
           version: '4.4.0',
-          platform: 'linux'
-        };
+          platform: 'linux',
+          bits: 64
+        } as const;
 
         await verify(query, 'https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-suse15-4.4.0.tgz');
       });
@@ -293,8 +288,9 @@ describe('mongodb-download-url', function() {
       it('should resolve 4.4.0 with RHEL-specific url', async function() {
         const query = {
           version: '4.4.0',
-          platform: 'linux'
-        };
+          platform: 'linux',
+          bits: 64
+        } as const;
 
         await verify(query, 'https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-rhel70-4.4.0.tgz');
       });
@@ -330,8 +326,9 @@ describe('mongodb-download-url', function() {
       it('should resolve 3.0.0 with RHEL-specific url', async function() {
         const query = {
           version: '3.0.0',
-          platform: 'linux'
-        };
+          platform: 'linux',
+          bits: 64
+        } as const;
 
         await verify(query, 'https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-rhel55-3.0.0.tgz');
       });
@@ -343,8 +340,9 @@ describe('mongodb-download-url', function() {
       it('should resolve 4.4.4 with debian-specific url', async function() {
         const query = {
           version: '4.4.4',
-          platform: 'linux'
-        };
+          platform: 'linux',
+          bits: 64
+        } as const;
 
         await verify(query, 'https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-debian92-4.4.4.tgz');
       });
@@ -352,8 +350,9 @@ describe('mongodb-download-url', function() {
       it('should resolve 4.0.0 with debian-specific url', async function() {
         const query = {
           version: '4.0.0',
-          platform: 'linux'
-        };
+          platform: 'linux',
+          bits: 64
+        } as const;
 
         await verify(query, 'https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-debian92-4.0.0.tgz');
       });
@@ -361,8 +360,9 @@ describe('mongodb-download-url', function() {
       it('should resolve 3.6.0 with debian-specific url', async function() {
         const query = {
           version: '3.6.0',
-          platform: 'linux'
-        };
+          platform: 'linux',
+          bits: 64
+        } as const;
 
         await verify(query, 'https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-debian81-3.6.0.tgz');
       });
@@ -383,8 +383,9 @@ describe('mongodb-download-url', function() {
       it('should resolve 4.4.4 with debian-specific url', async function() {
         const query = {
           version: '4.4.4',
-          platform: 'linux'
-        };
+          platform: 'linux',
+          bits: 64
+        } as const;
 
         await verify(query, 'https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-debian10-4.4.4.tgz');
       });
@@ -392,8 +393,9 @@ describe('mongodb-download-url', function() {
       it('should resolve 4.2.1 with debian-specific url', async function() {
         const query = {
           version: '4.2.1',
-          platform: 'linux'
-        };
+          platform: 'linux',
+          bits: 64
+        } as const;
 
         await verify(query, 'https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-debian10-4.2.1.tgz');
       });
@@ -401,8 +403,9 @@ describe('mongodb-download-url', function() {
       it('should resolve 4.1.1 with debian-specific url', async function() {
         const query = {
           version: '4.1.1',
-          platform: 'linux'
-        };
+          platform: 'linux',
+          bits: 64
+        } as const;
 
         await verify(query, 'https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-debian92-4.1.1.tgz');
       });
@@ -410,8 +413,9 @@ describe('mongodb-download-url', function() {
       it('should resolve 3.6.0 with debian-specific url', async function() {
         const query = {
           version: '3.6.0',
-          platform: 'linux'
-        };
+          platform: 'linux',
+          bits: 64
+        } as const;
 
         await verify(query, 'https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-debian81-3.6.0.tgz');
       });
@@ -625,8 +629,9 @@ describe('mongodb-download-url', function() {
       const query = {
         version: 'latest-alpha',
         platform: 'windows',
-        enterprise: true
-      };
+        enterprise: true,
+        bits: 64
+      } as const;
       await verify(query, 'https://downloads.mongodb.com/windows/mongodb-windows-x86_64-enterprise-latest.zip');
     });
 
@@ -635,8 +640,9 @@ describe('mongodb-download-url', function() {
         version: 'latest-alpha',
         platform: 'linux',
         distro: 'ubuntu2004',
-        enterprise: true
-      };
+        enterprise: true,
+        bits: 64
+      } as const;
       await verify(query, 'https://downloads.mongodb.com/linux/mongodb-linux-x86_64-enterprise-ubuntu2004-latest.tgz');
     });
   });
