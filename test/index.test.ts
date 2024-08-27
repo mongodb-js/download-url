@@ -296,6 +296,20 @@ describe('mongodb-download-url', function() {
       });
     });
 
+    describe('RHEL 8.3', function() {
+      withFakeDistro('rhel83');
+
+      it('should resolve 7.0.14 with new schema RHEL-specific url', async function() {
+        const query = {
+          version: '7.0.14',
+          platform: 'linux',
+          bits: 64
+        } as const;
+
+        await verify(query, 'https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-rhel8-7.0.14.tgz');
+      });
+    });
+
     describe('RHEL 8.0', function() {
       withFakeDistro('rhel80');
 

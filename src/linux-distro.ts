@@ -71,7 +71,8 @@ function listDistroIds({ id, version, codename }: { id: string, version: string,
       if (major >= 18) results.push({ value: 'ubuntu1804', priority: 400 });
       if (major >= 20) results.push({ value: 'ubuntu2004', priority: 500 });
       if (major >= 22) results.push({ value: 'ubuntu2204', priority: 600 });
-      if (major > 22) results.push({ value: 'ubuntu' + version.replace('.', '') + '04', priority: 700 });
+      if (major >= 24) results.push({ value: 'ubuntu2404', priority: 700 });
+      if (major > 24) results.push({ value: 'ubuntu' + version.replace('.', '') + '04', priority: 700 });
       return results;
     }
     case 'debian': {
@@ -84,6 +85,7 @@ function listDistroIds({ id, version, codename }: { id: string, version: string,
         if (codename === 'bullseye') results.push({ value: 'debian11', priority: 200 });
         if (codename === 'bookworm') results.push({ value: 'debian12', priority: 300 });
         if (codename === 'trixie') results.push({ value: 'debian13', priority: 400 });
+        if (codename === 'forky') results.push({ value: 'debian14', priority: 500 });
       }
       return results;
     }
@@ -104,21 +106,13 @@ function listDistroIds({ id, version, codename }: { id: string, version: string,
       return [{ value: 'rhel' + version + '0', priority: 100 }];
     case 'redhatenterprise':
     case 'redhatenterpriseserver': {
-      const toRhelVersions = (v: number, i: number) => {
-        if (v === 80) {
-          return [
-            { value: 'rhel80', priority: (i + 1) * 100 },
-            { value: 'rhel8', priority: ((i + 1) * 100) + 1 }
-          ];
-        } else {
-          return { value: 'rhel' + v, priority: (i + 1) * 100 };
-        }
-      };
-
+      // Since releases made in Aug 2024, the server uses 'rhel8' instead of 'rhel8x'
+      // for 8.x releases, so we multiply low version numbers by 10 and give them
+      // the highest priority in that class (e.g. 'rhel8' trumps 'rhel83')
       const want = +version.replace('.', '');
-      const known = [55, 57, 62, 67, 70, 71, 72, 80, 81, 82, 83, 90];
-      const allowedVersions = known.filter(v => v <= want);
-      return allowedVersions.flatMap(toRhelVersions);
+      const known = [55, 57, 62, 67, 70, 71, 72, 80, 81, 82, 83, 8, 90, 93, 9];
+      const allowedVersions = known.filter(v => v <= want || (v < 50 && v * 10 <= want));
+      return allowedVersions.map((v, i) => ({ value: 'rhel' + v, priority: (i + 1) * 100 }));
     }
   }
   return [];
