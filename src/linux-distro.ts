@@ -111,7 +111,7 @@ function listDistroIds({ id, version, codename }: { id: string, version: string,
       // the highest priority in that class (e.g. 'rhel8' trumps 'rhel83')
       const want = +version.replace('.', '');
       const known = [55, 57, 62, 67, 70, 71, 72, 80, 81, 82, 83, 8, 90, 93, 9];
-      const allowedVersions = known.filter(v => v <= want || (v < 50 && v * 10 <= want));
+      const allowedVersions = known.filter(v => v > 50 ? v <= want : v * 10 <= want);
       return allowedVersions.map((v, i) => ({ value: 'rhel' + v, priority: (i + 1) * 100 }));
     }
   }

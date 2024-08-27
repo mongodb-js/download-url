@@ -285,6 +285,16 @@ describe('mongodb-download-url', function() {
     describe('RHEL 7.7', function() {
       withFakeDistro('rhel77');
 
+      it('should resolve 7.0.14 with RHEL-specific url', async function() {
+        const query = {
+          version: '7.0.14',
+          platform: 'linux',
+          bits: 64
+        } as const;
+
+        await verify(query, 'https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-rhel70-7.0.14.tgz');
+      });
+
       it('should resolve 4.4.0 with RHEL-specific url', async function() {
         const query = {
           version: '4.4.0',
