@@ -640,11 +640,22 @@ describe('mongodb-download-url', function() {
       await verify(query, kUnknownUrl);
     });
 
-    it('should resolve `latest-alpha` for macos', async function() {
+    it('should resolve `latest-alpha` for macos arm64', async function() {
       const query = {
         version: 'latest-alpha',
         platform: 'macos',
-        enterprise: true
+        enterprise: true,
+        arch: 'aarch64'
+      };
+      await verify(query, 'https://downloads.mongodb.com/osx/mongodb-macos-arm64-enterprise-latest.tgz');
+    });
+
+    it('should resolve `latest-alpha` for macos x64', async function() {
+      const query = {
+        version: 'latest-alpha',
+        platform: 'macos',
+        enterprise: true,
+        arch: 'x64'
       };
       await verify(query, 'https://downloads.mongodb.com/osx/mongodb-macos-x86_64-enterprise-latest.tgz');
     });
