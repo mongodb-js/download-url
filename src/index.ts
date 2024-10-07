@@ -189,16 +189,17 @@ async function resolve(opts: ProcessedOptions): Promise<DownloadArtifactInfo> {
   let download: DownloadInfo;
   if (opts.version === 'latest-alpha' && opts.enterprise) {
     const targets = opts.target.map(({ value }) => value);
+    const arch = opts.arch.includes('arm64') ? 'arm64' : 'x86_64';
     let url, target;
     if (targets.includes('macos')) {
-      url = 'https://downloads.mongodb.com/osx/mongodb-macos-x86_64-enterprise-latest.tgz';
+      url = `https://downloads.mongodb.com/osx/mongodb-macos-${arch}-enterprise-latest.tgz`;
       target = 'macos';
     } else if (targets.includes('linux_x86_64')) {
       target = maximizer(opts.target, candidate => candidate.priority).value;
-      url = `https://downloads.mongodb.com/linux/mongodb-linux-x86_64-enterprise-${target}-latest.tgz`;
+      url = `https://downloads.mongodb.com/linux/mongodb-linux-${arch}-enterprise-${target}-latest.tgz`;
     } else if (targets.includes('windows_x86_64')) {
       target = 'windows';
-      url = 'https://downloads.mongodb.com/windows/mongodb-windows-x86_64-enterprise-latest.zip';
+      url = `https://downloads.mongodb.com/windows/mongodb-windows-${arch}-enterprise-latest.zip`;
     }
     if (url) {
       download = {
