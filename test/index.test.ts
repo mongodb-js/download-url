@@ -9,7 +9,7 @@ import resolve, { Options, clearCache } from '../';
 
 const kUnknownUrl = Symbol('kUnknownUrl');
 
-async function verify(query: Options | string, expectedURL: string | typeof kUnknownUrl): Promise<void> {
+async function verify(query: Options | string | undefined, expectedURL: string | typeof kUnknownUrl): Promise<void> {
   const res = await resolve(query);
   if (expectedURL !== kUnknownUrl) {
     assert.strictEqual(res.url, expectedURL);
@@ -355,6 +355,48 @@ describe('mongodb-download-url', function() {
         } as const;
 
         await verify(query, 'https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-rhel55-3.0.0.tgz');
+      });
+    });
+
+    describe('RHEL 7', function() {
+      withFakeDistro('rhel7');
+
+      it('should resolve 7.2 with RHEL-specific url', async function() {
+        const query = {
+          platform: 'linux',
+          arch: 's390x',
+          enterprise: true,
+          version: '6.0.19'
+        } as const;
+
+        await verify(query, 'https://downloads.mongodb.com/linux/mongodb-linux-s390x-enterprise-rhel72-6.0.19.tgz');
+      });
+    });
+
+    describe('RHEL 8', function() {
+      withFakeDistro('rhel8');
+
+      it('should resolve zseries with RHEL8.3-specific url', async function() {
+        const query = {
+          platform: 'linux',
+          arch: 's390x',
+          enterprise: true,
+          version: '6.0.19'
+        } as const;
+
+        // We don't have zseries release tagged as rhel8, so this should fallback to rhel83 as the latest one
+        await verify(query, 'https://downloads.mongodb.com/linux/mongodb-linux-s390x-enterprise-rhel83-6.0.19.tgz');
+      });
+
+      it('should resolve x64 with RHEL8-specific url', async function() {
+        const query = {
+          platform: 'linux',
+          enterprise: true,
+          version: '6.0.19',
+          bits: 64
+        } as const;
+
+        await verify(query, 'https://downloads.mongodb.com/linux/mongodb-linux-x86_64-enterprise-rhel8-6.0.19.tgz');
       });
     });
 

@@ -4,6 +4,7 @@
   "description": "Lookup download URLs for MongoDB versions.",
   "scripts": {
     "lint": "eslint src/**/*.ts test/**/*.ts",
+    "lint-fix": "eslint src/**/*.ts test/**/*.ts --fix",
     "test": "npm run lint && npm run build && nyc -r text -r html mocha --colors -r ts-node/register test/*.ts",
     "build": "npm run compile-ts && gen-esm-wrapper . ./.esm-wrapper.mjs",
     "prepare": "npm run build",

@@ -109,9 +109,16 @@ function listDistroIds({ id, version, codename }: { id: string, version: string,
       // Since releases made in Aug 2024, the server uses 'rhel8' instead of 'rhel8x'
       // for 8.x releases, so we multiply low version numbers by 10 and give them
       // the highest priority in that class (e.g. 'rhel8' trumps 'rhel83')
-      const want = +version.replace('.', '');
+      let want = +version.replace('.', '');
+
+      // If the desired version is supplied as a single digit, assume the user wants
+      // the latest release in that series - e.g. rhel7 should return rhel72
+      if (want < 10) {
+        want = want * 10 + 9;
+      }
       const known = [55, 57, 62, 67, 70, 71, 72, 80, 81, 82, 83, 8, 90, 93, 9];
       const allowedVersions = known.filter(v => v > 50 ? v <= want : v * 10 <= want);
+
       return allowedVersions.map((v, i) => ({ value: 'rhel' + v, priority: (i + 1) * 100 }));
     }
   }
